@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\casper-net-sdk\Casper.Network.SDK\Casper.Network.SDK.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="npm_packages\src\common.ts" />
+    <TypeScriptCompile Include="npm_packages\src\ledger-casper.ts" />
+    <TypeScriptCompile Include="npm_packages\src\types.ts" />
+    <TypeScriptCompile Include="npm_packages\webpack.config.ts" />
+  </ItemGroup>
+
+  <!--Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="npm install" WorkingDirectory="npm_packages" />
+    <Exec Command="npm run build" WorkingDirectory="npm_packages" />
+  </Target-->
+
+</Project>
