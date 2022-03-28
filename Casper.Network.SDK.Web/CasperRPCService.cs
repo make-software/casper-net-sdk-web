@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Casper.Network.SDK.Web
 {
-    public class CasperRPCService : ICasperRPCService
+    public class CasperRPCService : ICasperClient
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly IConfiguration _config;

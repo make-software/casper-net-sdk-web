@@ -17,7 +17,7 @@ namespace Casper.Network.SDK.Web
             
             serviceCollection.AddHttpClient(clientFactoryName).AddHttpMessageHandler<RpcLogger>();;
 
-            serviceCollection.AddSingleton<ICasperRPCService, CasperRPCService>();
+            serviceCollection.AddSingleton<ICasperClient, CasperRPCService>();
         }
 
         public static void AddCasperSSEService(this IServiceCollection serviceCollection, IConfiguration config)
