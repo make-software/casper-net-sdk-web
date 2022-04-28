@@ -6,6 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Casper.Network.SDK.Web
 {
+    /// <summary>
+    /// HTTP Delegating handler to log RPC requests/responses
+    /// </summary>
     public class RpcLogger : DelegatingHandler
     {
         private readonly ILogger<RpcLogger> _logger;

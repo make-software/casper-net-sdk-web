@@ -4,27 +4,20 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
-
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Casper.Network.SDK" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.13" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
-    <PackageReference Include="Casper.Network.SDK" Version="1.1.0-beta" />
   </ItemGroup>
 
-  <!--ItemGroup>
-    <ProjectReference Include="..\..\casper-net-sdk\Casper.Network.SDK\Casper.Network.SDK.csproj" />
-  </ItemGroup-->
-
   <ItemGroup>
-    <TypeScriptCompile Include="npm_packages\src\common.ts" />
-    <TypeScriptCompile Include="npm_packages\src\ledger-casper.ts" />
-    <TypeScriptCompile Include="npm_packages\src\types.ts" />
-    <TypeScriptCompile Include="npm_packages\webpack.config.ts" />
+    <TypeScriptCompile Include="npm_packages\src\ledgerApp.ts" />
+    <None Include="npm_packages\webpack.config.js" />
   </ItemGroup>
 
   <!--Target Name="PreBuild" BeforeTargets="PreBuildEvent">
