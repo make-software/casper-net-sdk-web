@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-    entry: './src/index.ts',
+    entry: './src/ledgerApp.ts',
     mode: 'development',
     devtool: 'inline-source-map',
     module: {
@@ -17,13 +17,12 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
         fallback: {
-            "stream": require.resolve("stream-browserify"),
             "buffer": require.resolve("buffer")
         }
     },
     output: {
-        filename: 'index.bundle.js',
-        path: path.resolve(__dirname, '../wwwroot/js'),
+        filename: 'casperLedgerInterop.js',
+        path: path.resolve(__dirname, '../wwwroot/'),
         library: 'ledgerInterop',
         libraryTarget: 'window'
     },    
@@ -33,9 +32,5 @@ module.exports = {
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
         })
-        // ,
-        // new webpack.ProvidePlugin({
-        //     process: 'process/browser',
-        // }),
     ],
 };

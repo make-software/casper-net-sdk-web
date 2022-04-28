@@ -32,7 +32,7 @@ namespace Casper.Network.SDK.Web
         /// <param name="config"></param>
         public static void AddCasperSSEService(this IServiceCollection serviceCollection, IConfiguration config)
         {
-            serviceCollection.AddScoped<ISSEClient, CasperSSEService>();
+            serviceCollection.AddSingleton<ISSEClient, CasperSSEService>();
         }
         
         /// <summary>

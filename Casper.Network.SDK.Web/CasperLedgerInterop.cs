@@ -52,7 +52,7 @@ namespace Casper.Network.SDK.Web
             try
             {
                 await _callLedgerInterop("ledgerInterop.addEventListeners",
-                    DotNetObjectReference.Create<CasperLedgerInterop>(this));
+                    DotNetObjectReference.Create(this));
                 
                 var activePK = await _callLedgerInterop<string>("ledgerInterop.connect", acctIdx);
                 
@@ -62,15 +62,24 @@ namespace Casper.Network.SDK.Web
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                _logger.LogDebug(e.Message);
+                throw;
             }
         }
 
         public async Task Disconnect()
         {
-            await _callLedgerInterop("ledgerInterop.disconnect");
+            try
+            {
+                await _callLedgerInterop("ledgerInterop.disconnect");
             
-            _logger.LogDebug("Ledger device disconnected.");
+                _logger.LogDebug("Ledger device disconnected.");
+            }
+            catch (Exception e)
+            {
+                _logger.LogDebug(e.Message);
+                throw;
+            }
         }
 
         public async Task<CasperAppVersion> GetCasperAppVersion()
@@ -83,10 +92,9 @@ namespace Casper.Network.SDK.Web
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                _logger.LogDebug(e.Message);
+                throw;
             }
-
-            return null;
         }
 
         public async Task<AppInfo> GetAppInfo()
@@ -99,10 +107,9 @@ namespace Casper.Network.SDK.Web
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                _logger.LogDebug(e.Message);
+                throw;
             }
-
-            return null;
         }
         
         public async Task SelectAccount(int acctIdx)
@@ -114,7 +121,7 @@ namespace Casper.Network.SDK.Web
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogDebug(e.Message);
                 throw;
             }
         }
@@ -123,31 +130,44 @@ namespace Casper.Network.SDK.Web
         {
             try
             {
-                ActivePK = await _callLedgerInterop<string>("ledgerInterop.showAccount", acctIdx);
-                _selectedAccountIdx = acctIdx;
+                var pk = await _callLedgerInterop<string>("ledgerInterop.showAccount", acctIdx);
+                ActivePK = pk ?? "";
+                _selectedAccountIdx = pk != null ? acctIdx : -1;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                _logger.LogDebug(e.Message);
+                throw;
             }
         }
 
         public async Task<bool> RequestSignature(Deploy deploy)
         {
-            var serializer = new DeployByteSerializer();
-            var bytes = serializer.ToBytes(deploy);
-
-            var signature = await _callLedgerInterop<string>("ledgerInterop.sign",
-                _selectedAccountIdx, bytes); 
-            
-            var approval = new DeployApproval()
+            try
             {
-                Signer =  Casper.Network.SDK.Types.PublicKey.FromHexString(ActivePK),
-                Signature = Signature.FromHexString(signature)
-            };
-            deploy.Approvals.Add(approval);
+                var serializer = new DeployByteSerializer();
+                var bytes = serializer.ToBytes(deploy);
 
-            return true;
+                var signature = await _callLedgerInterop<string>("ledgerInterop.sign",
+                    _selectedAccountIdx, bytes);
+
+                if (signature == null)
+                    throw new Exception("User rejected the signature request.");
+                
+                var approval = new DeployApproval()
+                {
+                    Signer =  PublicKey.FromHexString(ActivePK),
+                    Signature = Signature.FromHexString(signature)
+                };
+                deploy.Approvals.Add(approval);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogDebug(e.Message);
+                throw;
+            }
         }
         
         public class CasperAppVersion
