@@ -125,7 +125,7 @@ namespace Casper.Network.SDK.Web
 
             try
             {
-                var signerResult = await _callSignerInterop<JsonElement>("sign", deploy, srcPk, tgtPk);
+                var signerResult = await _callSignerInterop<JsonElement>("sign", json, srcPk, tgtPk);
 
                 var approval = new DeployApproval()
                 {
