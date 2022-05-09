@@ -1,0 +1,14 @@
+﻿<RadzenCard class="mt-3">
+    <div class="row">
+        <div class="col">
+            <RadzenButton Click=@(args => OnShowJsonClick()) Icon="refresh" ButtonStyle="ButtonStyle.Light"/>
+            <RadzenButton Click=@(args => Expand("**")) Icon="unfold_more" ButtonStyle="ButtonStyle.Light"/>
+            <RadzenButton Click=@(args => Collapse("**")) Icon="unfold_less" ButtonStyle="ButtonStyle.Light"/>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <json-viewer id="@ID"></json-viewer>
+        </div>
+    </div>
+</RadzenCard>

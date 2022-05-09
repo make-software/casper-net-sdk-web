@@ -1,0 +1,36 @@
+﻿@page "/account-info"
+@inherits ExplorerComponent;
+
+<h3>Account Info</h3>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(SuccessMessage))
+        {
+            <div class="alert alert-success" role="alert">
+                @((MarkupString) SuccessMessage)
+            </div>
+        }
+
+        <RadzenCard Class="w-100 mb-4">
+            <div class="row mb-4">
+                <PublicKeyTextBox Text="Enter the account Public Key:" SignerRef="@SignerInterop"
+                                  @bind-Value="@_accountPublicKey" Class="w-100"/>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <RadzenButton Text="Get Account Info" Click="@GetAccountInfoBtnClicked" class="float-lg-end"></RadzenButton>
+                </div>
+            </div>
+        </RadzenCard>
+
+        <RpcJsonViewer @ref="JsonViewerInstance"></RpcJsonViewer>
+    </div>
+</div>

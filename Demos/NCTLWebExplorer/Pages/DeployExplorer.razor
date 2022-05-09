@@ -1,0 +1,49 @@
+﻿@page "/deploys"
+@using Casper.Network.SDK.SSE
+
+<h3>Deploys</h3>
+
+<div class="row">
+    <div class="col-lg-12">
+        <RadzenDataGrid @ref="_deployGrid" AllowFiltering="true"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        FilterMode="FilterMode.Advanced"
+                        AllowPaging="true"
+                        PageSize="20"
+                        PagerHorizontalAlign="HorizontalAlign.Center"
+                        AllowSorting="true"
+                        Data="@_data"
+                        TItem="DeployProcessed"
+                        IsLoading="@_isLoading"
+                        Count="@_count"
+                        LoadData="@LoadData">
+            <Columns>
+                <RadzenDataGridColumn TItem="DeployProcessed" Property="DeployHash" Title="Deploy hash" Type="typeof(string)">
+                    <Template>
+                        <a href="/deploys/@context.DeployHash">@context.DeployHash.FormatHash()</a>
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="DeployProcessed" Property="BlockHash" Title="Block hash" Type="typeof(string)">
+                    <Template>
+                        @context.BlockHash.FormatHash()
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="DeployProcessed" Property="PublicKey" Title="Public key" Type="typeof(int)">
+                    <Template>
+                        @context.Account.ToAccountHex().FormatHash()
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="DeployProcessed" Property="Result" Title="Result" Type="typeof(int)">
+                    <Template>
+                        @(context.ExecutionResult.IsSuccess ? "Success" : "Failed")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="DeployProcessed" Property="Timestamp" Title="Timestamp" Type="typeof(string)">
+                    <Template>
+                        @context.Timestamp
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+</div>

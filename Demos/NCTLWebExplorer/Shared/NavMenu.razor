@@ -1,0 +1,58 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">NCTL Explorer</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="blocks">
+                <span class="oi oi-chevron-right" aria-hidden="true"></span> View Blocks
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="deploys">
+                <span class="oi oi-chevron-right" aria-hidden="true"></span> View Deploys
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="query-global-state">
+                <span class="oi oi-chevron-right" aria-hidden="true"></span> Global State Keys
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="account-info">
+                <span class="oi oi-chevron-right" aria-hidden="true"></span> Account Info
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="account-balance">
+                <span class="oi oi-chevron-right" aria-hidden="true"></span> Account Balance
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/transfer-cspr" Match="NavLinkMatch.All">
+                <span class="oi oi-chevron-right" aria-hidden="true"></span> Transfer $CSPR
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="send-deploy">
+                <span class="oi oi-chevron-right" aria-hidden="true"></span> Custom Deploy
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="signer">
+                <span class="oi oi-chevron-right" aria-hidden="true"></span> Sign message
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="ledger-test">
+                <span class="oi oi-chevron-right" aria-hidden="true"></span> Ledger Test
+            </NavLink>
+        </div>
+    </nav>
+</div>

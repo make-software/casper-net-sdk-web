@@ -1,0 +1,12 @@
+﻿<div class="row namedarg-collection">
+    <h5 class="float-start mt-2">Parameters:</h5>   
+
+    <RadzenDataList WrapItems="true" AllowPaging="true" Data="@_items" TItem="NamedArgItem" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+        <Template Context="item">
+            <NamedArgument Arg="item" OnRemoveItem="@RemoveItem"/>
+        </Template>
+    </RadzenDataList>
+    <div class="col-sm-12">
+        <RadzenButton Click="@AddNamedArg" class="float-start" ButtonStyle="ButtonStyle.Secondary">Add parameter</RadzenButton>
+    </div>
+</div>

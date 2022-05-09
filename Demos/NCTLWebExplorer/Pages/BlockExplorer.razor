@@ -1,0 +1,47 @@
+﻿@page "/blocks"
+@using Casper.Network.SDK.Types
+
+<h3>Blocks</h3>
+
+<div class="row">
+    <div class="col-lg-12">
+        <RadzenDataGrid @ref="_blockGrid" AllowFiltering="false"
+                        AllowPaging="true" 
+                        PageSize="20" 
+                        PagerHorizontalAlign="HorizontalAlign.Center" 
+                        AllowSorting="false" 
+                        Data="@_data" 
+                        TItem="Block"
+                        IsLoading="@_isLoading"
+                        Count="@_count" 
+                        LoadData="@LoadData">
+                <Columns>
+                    <RadzenDataGridColumn TItem="Block" Property="BlockHeight" Title="Block Height" Type="typeof(int)">
+                        <Template>
+                            <a href="/blocks/@context.Hash">@context.Header.Height</a>
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="Block" Property="Era" Title="Era" Type="typeof(int)">
+                        <Template>
+                            @context.Header.EraId
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="Block" Property="Deploys" Title="Deploys" Type="typeof(int)">
+                        <Template>
+                            @(context.Body.TransferHashes.Count + context.Body.DeployHashes.Count)
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="Block" Property="FirstName" Title="Block hash" Type="typeof(string)">
+                        <Template>
+                            <a href="/blocks/@context.Hash">@context.Hash.FormatHash()</a>
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="Block" Property="Timestamp" Title="Timestamp" Type="typeof(string)">
+                        <Template>
+                            @context.Header.Timestamp
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+    </div>
+</div>

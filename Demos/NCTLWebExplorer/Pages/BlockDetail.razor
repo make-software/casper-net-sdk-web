@@ -1,0 +1,59 @@
+﻿@page "/blocks/{BlockHash}"
+@inherits ExplorerComponent;
+
+@if (_block is null)
+{
+    <h3>Loading block @BlockHash</h3>
+}
+else
+{
+    <h3>Block details</h3>
+    <div class="row">
+        <div class="col-lg-12">
+            <RadzenCard>
+                <h3 class="h5">Block @BlockHash</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div >Block Height</div>
+                        <b>@(_block.Header.Height)</b>
+                        <div class="mt-1">Era Id</div>
+                        <b>@(_block.Header.EraId)</b>
+                        <div class="mt-1">Switch Block</div>
+                        <b>@(_block.Header.EraEnd != null ? "Yes" : "No")</b>
+                    </div>
+                    <div class="col-md-8">
+                        <div>Timestamp</div>
+                        <b>@(_block.Header.Timestamp)</b>
+                        <div class="mt-1">Parent Hash</div>
+                        <b>
+                            <a href="/blocks/@(_block.Header.ParentHash)">@(_block.Header.ParentHash)</a>
+                        </b>
+                        <div class="mt-1">State Root Hash</div>
+                        <b>@(_block.Header.StateRootHash)</b>
+                    </div>
+                </div>
+            </RadzenCard>
+            <RadzenCard class="mt-4">
+                <h3 class="h5">Deploys</h3>
+                @if (_block.Body.DeployHashes.Count == 0 && _block.Body.TransferHashes.Count == 0)
+                {
+                    <span>No deploys in this block.</span>
+                }
+                else
+                {
+                    foreach (var deploy in _block.Body.DeployHashes)
+                    {
+                        <a href="/deploys/@(deploy)">@(deploy)</a>
+                    }
+                    foreach (var deploy in _block.Body.TransferHashes)
+                    {
+                        <a href="/deploys/@(deploy)">@(deploy)</a>
+                    }
+                }
+            </RadzenCard>
+
+            <RpcJsonViewer @ref="JsonViewerInstance" Json="@_blockJson"></RpcJsonViewer>
+
+        </div>
+    </div>
+}

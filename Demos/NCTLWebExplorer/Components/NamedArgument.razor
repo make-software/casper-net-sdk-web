@@ -1,0 +1,69 @@
+﻿@using NCTLWebExplorer.Utils
+
+<div class="row namedarg-item">
+    <div class="col-sm-12 float-end">
+        <a @onclick="RemoveItemClicked" class="float-end">
+            <span class="oi oi-circle-x" aria-hidden="true"></span>
+        </a>
+    </div>
+    <div class="col-sm-3">
+        <h6>Name</h6>
+        <RadzenTextBox @bind-Value="Arg.Name" Change=@(args => OnChange(args, nameof(Arg.Name))) Class="w-100"/>
+    </div>
+    <div class="col-sm-3">
+        <div>
+            <h6>
+                CLType
+                <RadzenLabel class="float-end" Text="Option" Component="CheckBox1" Style="margin-left: 8px; vertical-align: middle;"/>
+                <RadzenCheckBox class="float-end" @bind-Value="Arg.Option" Name="CheckBox1" TValue="bool" Change=@(args => OnChange(args, nameof(Arg.Option))) />
+            </h6>
+        </div>
+
+        <RadzenDropDown AllowClear="true" TValue="string" Class="w-100"
+                        Data=@_clTypes
+                        @bind-Value="Arg.CLType"
+                        Change=@(args => OnChange(args, nameof(Arg.CLType)))>
+        </RadzenDropDown>
+    </div>
+    <div class="col-sm-6">
+        <h6>Value</h6>
+        <RadzenTextBox @bind-Value="Arg.Value" Change=@(args => OnChange(args, nameof(Arg.Value))) Class="w-100"/>
+    </div>
+</div>
+
+@code {
+
+    readonly IList<string> _clTypes = new List<string>()
+    {
+        "Bool", "I32", "I64", "U8", "U32", "U64", "U128", "U256", "U512",
+        "Unit", "String", "ByteArray", "Key", "URef", "PublicKey", "Any"
+    };
+
+    [Parameter]
+    public NamedArgItem Arg { get; set; }
+
+    [Parameter]
+    public EventCallback<NamedArgItem> OnRemoveItem { get; set; }
+
+    void OnChange(object value, string name)
+    {
+        var strValue = value as string;
+        switch (name)
+        {
+            case nameof(Arg.Name):
+                Arg.Name = strValue;
+                break;
+            case nameof(Arg.CLType):
+                Arg.CLType = strValue;
+                break;
+            case nameof(Arg.Value):
+                Arg.Value = strValue;
+                break;
+        }
+    }
+
+    async Task RemoveItemClicked()
+    {
+        await OnRemoveItem.InvokeAsync(Arg);
+    }
+}

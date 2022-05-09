@@ -1,0 +1,179 @@
+﻿@page "/send-deploy"
+@inherits ExplorerComponent;
+
+<h3>Send Deploy</h3>
+
+<div class="row">
+    <duyiv class="col-lg-12">
+
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(SuccessMessage))
+        {
+            <div class="alert alert-success" role="alert">
+                @((MarkupString) SuccessMessage)
+            </div>
+        }
+
+        <RadzenCard Class="w-100 mb-4">
+            <div class="row">
+                <h4 class="mb-4">Deploy header</h4>
+            </div>
+            <div class="row">
+                <PublicKeyTextBox Text="Account:" SignerRef="@SignerInterop"
+                                  LinkedToSigner="true"
+                                  @bind-Value="@_accountPk" Class="w-100"/>
+            </div>
+        </RadzenCard>
+        <RadzenCard Class="w-100 mb-4">
+            <div class="row">
+                <h4 class="mb-4">Payment</h4>
+            </div>
+            <div class="row mb-4">
+                <h5>Amount:</h5>
+                <div>
+                    <RadzenTextBox Name="PaymentAmount" @bind-Value="_paymentAmount" Placeholder="enter payment quantity in motes..." Class="w-100"/>
+                </div>
+            </div>
+        </RadzenCard>
+        <RadzenCard Class="w-100 mb-4">
+            <div class="row">
+                <h4 class="mb-4">Session</h4>
+            </div>
+            <div class="row mb-4">
+                <RadzenRadioButtonList @bind-Value=@_sessionType TValue="int" 
+                                       Orientation="Orientation.Horizontal" Change="@(OnSessionTypeChange)">
+                    <Items>
+                        <RadzenRadioButtonListItem Text="ModuleBytes" Value="0"/>
+                        <RadzenRadioButtonListItem Text="StoredContractByHash" Value="1"/>
+                        <RadzenRadioButtonListItem Text="StoredContractByName" Value="2"/>
+                        <RadzenRadioButtonListItem Text="StoredVersionedContractByHash " Value="3"/>
+                        <RadzenRadioButtonListItem Text="StoredVersionedContractByName " Value="4"/>
+                        <RadzenRadioButtonListItem Text="Transfer " Value="5"/>
+                    </Items>
+                </RadzenRadioButtonList>
+            </div>
+            @if (_sessionType == 0)
+            {
+                <div class="row mb-4">
+                    <h5>Select WASM file:</h5>
+                    <div class="col-md-4">
+                        <InputFile OnChange="@LoadFiles"></InputFile>
+                    </div>
+                </div>
+            }
+            @if (_sessionType == 1)
+            {
+                <div class="row mb-4">
+                    <h5>Contract hash:</h5>
+                    <div>
+                        <RadzenTextBox @bind-Value="_contractHash" Placeholder="enter contract hash..." Class="w-100"/>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <h5>Entry point:</h5>
+                    <div>
+                        <RadzenTextBox @bind-Value="_entryPoint" Placeholder="enter contract entry point..." Class="w-100"/>
+                    </div>
+                </div>
+            }
+            @if (_sessionType == 2)
+            {
+                <div class="row mb-4">
+                    <h5>Contract name:</h5>
+                    <div>
+                        <RadzenTextBox @bind-Value="_contractName" Placeholder="enter contract name..." Class="w-100"/>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <h5>Entry point:</h5>
+                    <div>
+                        <RadzenTextBox @bind-Value="_entryPoint" Placeholder="enter contract entry point..." Class="w-100"/>
+                    </div>
+                </div>
+            }
+            @if (_sessionType == 3)
+            {
+                <div class="row mb-4">
+                    <div class="col-3">
+                        <h5>Contract version:</h5>
+                        <div>
+                            <RadzenTextBox @bind-Value="_contractVersion" Placeholder="enter version" Class="w-100"/>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <h5>Contract hash:</h5>
+                        <div>
+                            <RadzenTextBox @bind-Value="_contractHash" Placeholder="enter contract hash..." Class="w-100"/>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <h5>Entry point:</h5>
+                        <div>
+                            <RadzenTextBox @bind-Value="_entryPoint" Placeholder="enter contract entry point..." Class="w-100"/>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (_sessionType == 4)
+            {
+                <div class="row mb-4">
+                    <div class="col-3">
+                        <h5>Contract version:</h5>
+                        <div>
+                            <RadzenTextBox @bind-Value="_contractVersion" Placeholder="enter version" Class="w-100"/>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <h5>Contract name:</h5>
+                        <div>
+                            <RadzenTextBox @bind-Value="_contractName" Placeholder="enter contract name..." Class="w-100"/>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <h5>Entry point:</h5>
+                        <div>
+                            <RadzenTextBox @bind-Value="_entryPoint" Placeholder="enter contract entry point..." Class="w-100"/>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (_sessionType == 5)
+            {
+                <div class="alert alert-info" role="alert">
+                    For a standard transfer add three parameters:
+                    <ul>
+                        <li><em>'amount' with type U512.</em></li>
+                        <li><em>'target'  with type PublicKey.</em></li>
+                        <li><em>'id' with type Option(U64).</em></li>
+                    </ul>
+                </div>
+            }
+            <div class="row">
+                <div class="col-lg-12">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <NamedArgumentCollection @ref="_namedArgsCollection"/>
+                </div>
+            </div>
+        </RadzenCard>
+
+        <div class="row  mb-4">
+            <div class="col-12">
+                <RadzenButton Text="Deploy Contract" Click="@SendDeployBtnClicked" class="float-end mx-4"/>
+            </div>
+        </div>
+
+        @* @if (_sessionType == 5) *@
+        @* { *@
+        @*      *@
+        @* } *@
+        <RpcJsonViewer @ref="JsonViewerInstance"></RpcJsonViewer>
+    </duyiv>
+</div>

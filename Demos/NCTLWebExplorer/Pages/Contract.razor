@@ -1,0 +1,41 @@
+﻿@page "/contract"
+@inherits ExplorerComponent;
+
+<PageTitle>View contract</PageTitle>
+
+<h3>View contract</h3>
+
+<div class="row">
+    <div class="col-lg-12">
+        
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(SuccessMessage))
+        {
+            <div class="alert alert-success" role="alert">
+                @((MarkupString) SuccessMessage)
+            </div>
+        }
+        
+        <RadzenCard Class="w-100 mb-4">
+            <div class="row mb-4">
+                <h5>Enter a contract hash:</h5>
+                <div>
+                    <RadzenTextBox @bind-Value="ContractHash" Class="w-100"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <RadzenButton Text="Get contract details" Click="@GetContractDetails" class="float-end"/>
+                </div>
+            </div>
+        </RadzenCard>
+
+        <RpcJsonViewer @ref="JsonViewerInstance"></RpcJsonViewer>
+
+    </div>
+</div>

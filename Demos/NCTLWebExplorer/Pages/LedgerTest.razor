@@ -1,0 +1,102 @@
+﻿@page "/ledger-test"
+@inherits ExplorerComponent;
+
+<h3>Ledger Test</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-xl-4 ">
+            <RadzenCard>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <RadzenButton class="w-75" Click=@(args => OnLedgerConnect()) Text="Connect"/>
+                        <RadzenButton class="mt-4 w-75" Click=@(args => OnLedgerDisconnect()) Text="Disconnect"/>
+
+                    </div>
+
+                </div>
+
+            </RadzenCard>
+        </div>
+        <div class="col-lg-6 col-xl-8 ">
+            <RadzenCard>
+                <h3 class="h5">Ledger info <a href="#" @onclick="@(async () => await OnRefreshLedgerInfo())" @onclick:preventDefault style="float:right">Refresh</a></h3>
+                @if (_appInfo != null)
+                {
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Current app:&nbsp;</strong>@_appInfo.AppName @_appInfo.AppVersion
+                        </div>
+                        <div class="col-6">
+                            <strong>Device locked:&nbsp;</strong>@(_appVersion != null ? (_appVersion.DeviceLocked ? "Yes" : "No") : "n/a")
+                        </div>
+                        <div class="col-6">
+                            <strong>SignedMcuCode:&nbsp;</strong>@(_appInfo.FlagSignedMcuCode)
+                        </div>
+                        <div class="col-6">
+                            <strong>PINValidated:&nbsp;</strong>@(_appInfo.FlagPINValidated)
+                        </div>
+                        <div class="col-6">
+                            <strong>Len:&nbsp;</strong>@(_appInfo.FlagLen)
+                        </div>
+                        <div class="col-6">
+                            <strong>Onboarded:&nbsp;</strong>@(_appInfo.FlagOnboarded)
+                        </div>
+                        <div class="col-6">
+                            <strong>Value:&nbsp;</strong>@(_appInfo.FlagsValue)
+                        </div>
+                        <div class="col-6">
+                            <strong>Recovery:&nbsp;</strong>@(_appInfo.FlagRecovery)
+                        </div>
+                    </div>
+                }
+            </RadzenCard>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12 mx-auto">
+            <RadzenCard>
+                <div class="row">
+                    <div class="col-4">
+                        <span>Key index:</span><RadzenNumeric class="mt-4" TValue="int" Min="1" Max="100" @bind-Value="_selectedAccountIdx"/>
+                    </div>
+                    <div class="col-4">
+                        <RadzenButton class="mt-4" Click=@(args => OnLedgerSelectAccount(_selectedAccountIdx)) Text="ledgerGetAccount"/>
+                    </div>
+                    <div class="col-4">
+                        <RadzenButton class="mt-4" Click=@(args => OnLedgerShowAccount(_selectedAccountIdx)) Text="ledgerShowAccount"/>
+                    </div>
+                    <div class="col-12 mt-4">
+                        <RadzenTextBox ReadOnly="true" Class="w-100" @bind-Value="@_selectedAccount"/>
+                    </div>
+
+                </div>
+            </RadzenCard>
+        </div>
+        <div class="col-12 mx-auto mt-4">
+            <RadzenCard>
+                <h4>Transfer deploy</h4>
+                <div class="row mb-4">
+                    <PublicKeyTextBox Text="Enter the recipient Public Key:"
+                                      @bind-Value="@_recipientPublicKey" Class="w-100"/>
+                </div>
+                <div class="row mb-4">
+                    <h5>Enter the amount to transfer (in $CSPR):</h5>
+                    <div>
+                        <RadzenTextBox @bind-Value="_transferAmount" Class="w-100"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 offset-4 text-center">
+                        <RadzenButton Click=@(args => OnLedgerSign()) Text="ledgerSign"/>
+                    </div>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(_ledgerSignNotice))
+                {
+                    <div class="alert alert-warning mt-4" role="alert">
+                        @((MarkupString) _ledgerSignNotice)
+                    </div>
+                }
+            </RadzenCard>
+        </div>
+    </div>
+</div>

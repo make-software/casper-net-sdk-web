@@ -1,0 +1,15 @@
+﻿/*div.pkwrapper > div*/
+h5 + div
+{
+    display: flex;
+    flex-direction: row
+}
+::deep input {
+    width: 100%;
+}
+::deep input::placeholder {
+    font-style: italic;
+}
+::deep button {
+    margin-left: 10px;
+}

@@ -1,0 +1,50 @@
+﻿@page "/signer"
+@inherits ExplorerComponent;
+
+<h3>Casper Signer</h3>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(SuccessMessage))
+        {
+            <div class="alert alert-success" role="alert">
+                @((MarkupString) SuccessMessage)
+            </div>
+        }
+
+        <RadzenCard Class="w-100 mb-4">
+            <div class="row">
+                <h4 class="mb-4">Enter a message to sign:</h4>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-3 align-items-center d-flex">
+                    <RadzenLabel Text="Message"/>
+                </div>
+                <div class="col-md-9">
+                    <RadzenTextBox @bind-Value="_messageToSign" Class="w-100"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <RadzenButton Text="Sign with Signer" Click="@SignMessage" class="float-end"/>
+                </div>
+            </div>
+        </RadzenCard>
+        
+        @if (_signature != null)
+        {
+            <RadzenCard>
+                <h4 class="mb-4">Signature</h4>
+                <RadzenTextArea @bind-Value="@_signature" ReadOnly="true" Class="w-100"/>
+            </RadzenCard>
+        }
+
+    </div>
+</div>

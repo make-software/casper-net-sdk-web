@@ -1,0 +1,46 @@
+﻿@page "/query-global-state"
+@inherits ExplorerComponent;
+
+<h3>Query Global State</h3>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(SuccessMessage))
+        {
+            <div class="alert alert-success" role="alert">
+                @((MarkupString) SuccessMessage)
+            </div>
+        }
+
+        <RadzenCard Class="w-100 mb-4">
+            <div class="row mb-4">
+                <h5>Enter a Global State Key:</h5>
+                <div>
+                    <RadzenTextBox @bind-Value="GlobalStateKey" Placeholder="Global State Key..." Class="w-100"/>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <h5>Named keys path (optional):</h5>
+                <div>
+                    <RadzenTextBox @bind-Value="Path" Placeholder="path..." Class="w-100"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <RadzenButton Text="Query Global State" Click="@QueryGlobalStateBtnClicked" class="float-end"/>
+                </div>
+            </div>
+        </RadzenCard>
+    </div>
+    <div class="col-lg-12 mt-3">
+        <RpcJsonViewer @ref="JsonViewerInstance"></RpcJsonViewer>
+
+    </div>
+</div>
