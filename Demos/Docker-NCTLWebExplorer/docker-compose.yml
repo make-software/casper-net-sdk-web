@@ -21,14 +21,3 @@ services:
       Casper.Network.SDK.Web__SSEHost: 'mynctl-nctlwebexplorer'
     ports:
       - 8081:80
-
-  mainnetwebexplorer:
-    image: casper-nctlwebexplorer
-    container_name: mainnetwebexplorer
-    tty: true
-    environment:
-      Casper.Network.SDK.Web__NodeAddress: 'http://3.12.207.193:7777'
-      Casper.Network.SDK.Web__SSEHost: '3.12.207.193'
-      Casper.Network.SDK.Web__SSEPort: '9999'
-    ports:
-      - 8081:80
