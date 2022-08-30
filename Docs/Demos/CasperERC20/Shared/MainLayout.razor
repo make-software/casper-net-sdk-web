@@ -1,0 +1,58 @@
+﻿@* @implements IDisposable *@
+@inherits LayoutComponentBase
+
+<PageTitle>ERC20 Contract Demo</PageTitle>
+
+<div class="page">
+
+    <RadzenNotification/>
+    <main>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <span class="navbar-brand mx-4" >ERC20 Contract Demo</span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/install-new-contract">Install new contract</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/">Select ERC20 contract</a>
+                        </li>
+
+                    </ul>
+                    <form class="d-flex">
+                        @if (_signerStatus == SignerStatus.NotPresent)
+                        {
+                            <a href="https://chrome.google.com/webstore/detail/casperlabs-signer/djhndpllfiibmcdbnmaaahkhchcoijce" target="_blank">
+                                <RadzenButton Click="@OnConnectClick" Text="Install signer" Icon="arrow_circle_down" ButtonStyle="ButtonStyle.Danger"/>
+                            </a>
+                        }
+                        else if (_signerStatus == SignerStatus.Disconnected)
+                        {
+                            <RadzenButton Click="@OnConnectClick" Text="Connect to signer" Icon="check_circle" ButtonStyle="ButtonStyle.Danger"/>
+                        }
+                        else if (_signerStatus == SignerStatus.Connected)
+                        {
+                            <RadzenButton Click="@OnConnectClick" Text="Unlock signer" Icon="check_circle" ButtonStyle="ButtonStyle.Primary"/>
+                        }
+                        else if (_signerStatus == SignerStatus.Unlocked)
+                        {
+                            <RadzenButton Click="@OnConnectClick" Text="@GetActivePKLabel()" Icon="key" ButtonStyle="ButtonStyle.Success"/>
+                        }
+                        else
+                        {
+                            <RadzenButton Click="@OnConnectClick" Text="Unknown" Icon="add_circle_outline" ButtonStyle="ButtonStyle.Danger"/>
+                        }
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

@@ -1,0 +1,11 @@
+﻿@inherits FormComponent<string>
+<div id="@GetId()" class="pkwrapper @GetCssClass()">
+    <h5>@Text</h5>
+    <div>
+        <RadzenTextBox ReadOnly="@_linkedToSigner" Change=@(OnChange) @bind-Value="@Value"
+                       Placeholder="@(_linkedToSigner && string.IsNullOrEmpty(Value) ? "unlock Casper Signer" : "")"
+                       Style="@(_linkedToSigner && !string.IsNullOrEmpty(Value) ? "background-color:#e0ffe1" : "")"/>
+        <RadzenButton Icon="key" ButtonStyle="ButtonStyle.Light" Visible="@_getKeyBtnVisible"
+                      Click="args => GetKeyFromSigner()"/>
+    </div>
+</div>

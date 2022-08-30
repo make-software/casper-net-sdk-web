@@ -1,0 +1,91 @@
+﻿@using Casper.Network.SDK.JsonRpc
+@using Casper.Network.SDK.Types
+
+@if (!string.IsNullOrWhiteSpace(_successMessage))
+{
+    <div class="alert alert-success mt-4" role="alert">
+        @_successMessage
+    </div>
+}
+@if (!string.IsNullOrWhiteSpace(_warningMessage))
+{
+    <div class="alert alert-warning mt-4" role="alert">
+        @_warningMessage
+    </div>
+}
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <div class="alert alert-danger mt-4" role="alert">
+        <b>@_errorMessage</b>
+        @if (!string.IsNullOrWhiteSpace(_exceptionMessage))
+        {
+            <div class="mt-2">
+                <span style="text-decoration: underline">Code</span>:&nbsp;@_exceptionCode<br/>
+                <span style="text-decoration: underline">Message</span>:&nbsp;@_exceptionMessage
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private string _warningMessage;
+    private string _successMessage;
+    private string _errorMessage;
+    private string _exceptionCode;
+    private string _exceptionMessage;
+
+    public bool Visible => !string.IsNullOrWhiteSpace(_successMessage) ||
+                           !string.IsNullOrWhiteSpace(_warningMessage) ||
+                           !string.IsNullOrWhiteSpace(_errorMessage);
+
+    public void ShowSuccess(string message)
+    {
+        Reset();
+        _successMessage = message;
+        InvokeAsync(StateHasChanged);
+    }
+    
+    public void ShowWarning(string message)
+    {
+        Reset();
+        _warningMessage = message;
+        InvokeAsync(StateHasChanged);
+    }
+    
+    public void ShowError(string errorMessage, Exception ex = null)
+    {
+        Reset();
+        _errorMessage = errorMessage;
+        
+        if (ex is AggregateException aggrEx)
+            ex = aggrEx.InnerExceptions.Count == 1 ?
+                aggrEx.InnerExceptions.First() : aggrEx;
+
+        if (ex is RpcClientException exRpc)
+        {
+            _exceptionCode = exRpc.RpcError.Code.ToString();
+            _exceptionMessage = exRpc.RpcError.Message;
+        }
+        else
+        {
+            _exceptionCode = "1";
+            _exceptionMessage = ex?.Message;
+        }
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void Reset()
+    {
+        _warningMessage = string.Empty;
+        _successMessage = string.Empty;
+        _errorMessage = string.Empty;
+        _exceptionCode = "1";
+        _exceptionMessage = string.Empty;
+    }
+    
+    public void Hide()
+    {
+        Reset();
+        InvokeAsync(StateHasChanged);
+    }
+}
