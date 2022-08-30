@@ -1,0 +1,42 @@
+@page "/"
+@inherits CasperERC20.Pages.ExplorerComponent
+
+<PageTitle>Casper ERC20 Demo - Select contract</PageTitle>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+            @if (_erc20Contracts == null)
+            {
+                <div class="row mt-4">
+                    Loading...
+                </div>
+            }
+            else
+            {
+                <RadzenCard class="mt-4">
+                    @if (_showInputBox || !_erc20Contracts.Any())
+                    {
+                        <span>Enter a contract hash</span>
+                        <RadzenTextBox class="mt-2" @bind-Value="@_selectedContract"/>
+                        @if (_erc20Contracts.Any())
+                        {
+                            <span class="mt-2">or <a href="#" @onclick="@(() => _showInputBox = false)">select</a> a recent contract.</span>
+                        }
+                    }
+                    else
+                    {
+                        <span>Select a contract from the list</span>
+                        <RadzenDropDown class="mt-2" Data=_erc20Contracts @bind-Value=@_selectedContract Placeholder="Select contract..."
+                                        TextProperty="Caption" ValueProperty="Hash"/>
+
+                        <span class="mt-2">or <a href="#" @onclick="@(() => { _selectedContract = ""; _showInputBox = true; })">enter manually</a> a contract hash.</span>
+                    }
+
+                    <RadzenButton class="mt-4" Click=@(args => OnViewContractClick(_selectedContract)) Text="View contract"/>
+
+                </RadzenCard>
+            }
+        </div>
+    </div>
+</div>

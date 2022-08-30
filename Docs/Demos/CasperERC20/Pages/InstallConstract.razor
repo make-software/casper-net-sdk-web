@@ -1,0 +1,98 @@
+﻿@page "/install-new-contract"
+@inherits CasperERC20.Pages.ExplorerComponent
+
+<div class="row">
+    <div class="col-lg-6 col-md-12 p-3">
+        <h4 class="mb-4">Enter the details of the new token and deploy the contract.</h4>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+
+            <RadzenSteps SelectedIndex="_stepsIndex" ShowStepsButtons="false">
+                <Steps>
+                    <RadzenStepsItem Text="Token details" Disabled="@(_stepsIndex != 0)">
+                        <RadzenCard class="mt-4">
+
+                            <h4>Name</h4>
+                            <RadzenTextBox Class="w-100" @bind-Value="@_name"/>
+
+                            <h4 class="mt-4">Symbol</h4>
+                            <RadzenTextBox Class="w-100" @bind-Value="@_symbol"/>
+
+                            <h4 class="mt-4">Decimals</h4>
+                            <RadzenMask Mask="**" CharacterPattern="[0-9]" Placeholder="0" Name="Decimals" @bind-Value="@_decimals" Style="width: 100%;"/>
+
+                            <h4 class="mt-4">Total Supply</h4>
+                            <RadzenMask Mask="************************" CharacterPattern="[0-9]" Placeholder="0" Name="Decimals" @bind-Value="@_totalSupply" Style="width: 100%;"/>
+
+                            <RadzenButton class="mt-4" Disabled="@(!IsTokenDataComplete() || _deployHash != null)"
+                                          Click=@(_ => OnGoToSignDeployClick()) Text="Next"/>
+                        </RadzenCard>
+                    </RadzenStepsItem>
+
+                    <RadzenStepsItem Text="Sign deploy" Disabled="@(_stepsIndex != 1)">
+                        <RadzenCard class="mt-4">
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                    <th scope="row">Name</th>
+                                    <td>@_name</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Symbol</th>
+                                    <td>@_symbol</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Decimals</th>
+                                    <td>@_decimals</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Total Supply</th>
+                                    <td>@_totalSupply</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <PublicKeyTextBox Class="mt-2" Text="Owner Public Key" SignerRef="@SignerInterop"
+                                              LinkedToSigner="true" @bind-Value="@_ownerPK"/>
+
+                            <RadzenButton class="mt-4" Disabled="@(string.IsNullOrEmpty(_ownerPK))"
+                                          Click=@(_ => OnDeployClick()) Text="Sign and deploy"/>
+                            <a class="mt-2" href="/install-new-contract" @onclick="@(() => _stepsIndex = 0)">Go back</a>
+                            <CasperClientError @ref="_signDeployError"></CasperClientError>
+
+                        </RadzenCard>
+                    </RadzenStepsItem>
+
+                    <RadzenStepsItem Text="Deploy processing" Disabled="@(_stepsIndex != 2)">
+                        <RadzenCard class="mt-4">
+
+                            <h4>Deploy hash</h4>
+                            <RadzenTextBox ReadOnly="true" Class="w-100" @bind-Value="@_deployHash"/>
+
+                            @if (_getDeployError is {Visible: false })
+                            {
+                                @if (_contractHash == null)
+                                {
+                                    <div class="alert alert-info mt-4" role="alert">
+                                        Waiting for deploy execution results...
+                                    </div>
+                                }
+                                else
+                                {
+                                    <h4 class="mt-4">Contract hash</h4>
+                                    <RadzenTextBox ReadOnly="true" Class="w-100" @bind-Value="@_contractHash"/>
+
+                                    <RadzenButton class="mt-4" Click=@(_ => NavigationManager.NavigateTo($"/contract/{_contractHash}")) Text="View contract"/>
+                                }
+                            }
+                            <CasperClientError @ref="_getDeployError"></CasperClientError>
+                        </RadzenCard>
+                    </RadzenStepsItem>
+                </Steps>
+            </RadzenSteps>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+﻿@page "/contract/{ContractHash}"
+
+@inherits CasperERC20.Pages.ExplorerComponent
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-lg-10 col-xl-8 mx-auto">
+            <RadzenTabs RenderMode="TabRenderMode.Client">
+                <Tabs>
+                    <RadzenTabsItem Text="Details">
+                        @if (ERC20Client.Name == null)
+                        {
+                            <RadzenLabel Text="Loading..." Visible="@(_detailsError== null || !_detailsError.Visible)" />
+                            <CasperClientError @ref="_detailsError" />
+                        }
+                        else
+                        {
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                    <th scope="row">Name</th>
+                                    <td>@ERC20Client.Name</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Symbol</th>
+                                    <td>@ERC20Client.Symbol</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Decimals</th>
+                                    <td>@ERC20Client.Decimals</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Total Supply</th>
+                                    <td>@ERC20Client.TotalSupply</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        }
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Balance" Disabled="@(_detailsError== null || _detailsError.Visible)">
+
+                        <div class="row px-3">
+                            <PublicKeyTextBox Text="Public Key" SignerRef="@SignerInterop" @bind-Value="@_subjectPK"/>
+                            <div>
+                                <RadzenButton class="mt-4 w-100" Click=@(args => OnGetBalanceClick()) Text="Get Balance"/>
+                            </div>
+                            <CasperClientError @ref="_getBalanceError"></CasperClientError>
+                            @_balanceResult
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Allowance" Disabled="@(_detailsError== null || _detailsError.Visible)">
+                        <div class="row px-3">
+                            <PublicKeyTextBox Text="Owner Public Key" SignerRef="@SignerInterop" @bind-Value="@_ownerPK"/>
+                            <PublicKeyTextBox Class="mt-4" Text="Spender Public Key" SignerRef="@SignerInterop" @bind-Value="@_spenderPK"/>
+                            <div>
+                                <RadzenButton class="mt-4 w-100" Click=@(OnGetAllowanceClick) Text="Get Allowance"/>
+                            </div>
+                            <CasperClientError @ref="_getAllowanceError"></CasperClientError>
+                            <div>@_allowanceResult</div>
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Transfer" Disabled="@(_detailsError== null || _detailsError.Visible)">
+                        <div class="row px-3">
+                            <ERC20TransferTo ERC20Client="@ERC20Client" />
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Approve spender" Disabled="@(_detailsError== null || _detailsError.Visible)">
+                        <div class="row px-3">
+                            <ERC20ApproveSpender ERC20Client="@ERC20Client" />
+                        </div>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Transfer from" Disabled="@(_detailsError== null || _detailsError.Visible)">
+                        <div class="row px-3">
+                            <ERC20TransferFrom ERC20Client="@ERC20Client" />
+                        </div>
+                    </RadzenTabsItem>
+
+                </Tabs>
+            </RadzenTabs>
+        </div>
+
+    </div>
+</div>
