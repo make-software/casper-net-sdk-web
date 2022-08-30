@@ -1,0 +1,18 @@
+﻿
+<PublicKeyTextBox Text="Owner Public Key" SignerRef="@SignerInterop" @bind-Value="@_ownerPublicKey"/>
+
+<PublicKeyTextBox Class="mt-4" Text="Spender Public Key" SignerRef="@SignerInterop" 
+                  LinkedToSigner="true" @bind-Value="@_spenderPublicKey"/>
+
+<PublicKeyTextBox Class="mt-4" Text="Target Public Key" SignerRef="@SignerInterop" @bind-Value="@_targetPublicKey"/>
+
+<div>
+   <h5 class="mt-4">Amount</h5>
+   <RadzenMask Mask="************************" CharacterPattern="[0-9]" Placeholder="0" Name="Amount" @bind-Value="@_amount" Style="width: 100%;"/>
+</div>
+
+<div>
+    <RadzenButton Class="mt-4 w-100" Click=@(args => OnTransferClick()) Text="Sign and Transfer"/>
+</div>
+
+<CasperClientError @ref="_deployAlert"></CasperClientError>

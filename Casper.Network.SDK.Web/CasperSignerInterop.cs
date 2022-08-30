@@ -14,6 +14,8 @@ namespace Casper.Network.SDK.Web
     /// </summary>
     public delegate void SignerStateUpdateEventHandler(bool isConnected, bool isUnlocked, string activePublicKey);
 
+    public delegate Task SignerStateUpdateEventHandlerAsync(bool isConnected, bool isUnlocked, string activePublicKey);
+    
     /// <summary>
     /// Service class to interact with Signer extension in the browser.
     /// </summary>
@@ -25,6 +27,8 @@ namespace Casper.Network.SDK.Web
 
         public event SignerStateUpdateEventHandler OnStateUpdate;
 
+        public event SignerStateUpdateEventHandlerAsync OnStateUpdateAsync;
+        
         public CasperSignerInterop(IJSRuntime jsRuntime, ILogger<CasperSignerInterop> logger)
         {
             _logger = logger;
@@ -67,11 +71,14 @@ namespace Casper.Network.SDK.Web
         /// by the user.
         /// </summary>
         [JSInvokable("UpdateState")]
-        public void UpdateState(bool isConnected, bool isUnlocked, string activePublicKey)
+        public async Task UpdateState(bool isConnected, bool isUnlocked, string activePublicKey)
         {
             _logger.LogDebug("Updated state: " +
                 $"{{IsConnected:{isConnected}, IsUnlocked:{isUnlocked}, ActivePK:{activePublicKey}}}");
             OnStateUpdate?.Invoke(isConnected, isUnlocked, activePublicKey);
+            
+            if(OnStateUpdateAsync != null)
+               await OnStateUpdateAsync(isConnected, isUnlocked, activePublicKey);
         }
 
         /// <summary>
@@ -125,7 +132,7 @@ namespace Casper.Network.SDK.Web
 
             try
             {
-                var signerResult = await _callSignerInterop<JsonElement>("sign", json, srcPk, tgtPk);
+                var signerResult = await _callSignerInterop<JsonElement>("sign", json, srcPk.ToLower(), tgtPk.ToLower());
 
                 var approval = new DeployApproval()
                 {
