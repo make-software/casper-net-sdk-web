@@ -7,8 +7,14 @@ using Microsoft.JSInterop;
 
 namespace Casper.Network.SDK.Web
 {
+    /// <summary>
+    /// Delegate to receive Ledger state update events.
+    /// </summary>
     public delegate void LedgerStateUpdateEventHandler(bool isUnlocked, string activePublicKey);
 
+    /// <summary>
+    /// Service class to interact with Ledger from a web app.
+    /// </summary>
     public class CasperLedgerInterop
     {
         private readonly ILogger<CasperLedgerInterop> _logger;
@@ -47,6 +53,10 @@ namespace Casper.Network.SDK.Web
             OnStateUpdate?.Invoke(isUnlocked, activePublicKey);
         }
         
+        /// <summary>
+        /// Requests a connection to the Ledger device and starts listening to events.
+        /// </summary>
+        /// <param name="acctIdx">Initial selected account.</param>
         public async Task Connect(int acctIdx=0)
         {
             try
@@ -67,6 +77,9 @@ namespace Casper.Network.SDK.Web
             }
         }
 
+        /// <summary>
+        /// Disconnects from the Ledger device.
+        /// </summary>
         public async Task Disconnect()
         {
             try
@@ -82,6 +95,9 @@ namespace Casper.Network.SDK.Web
             }
         }
 
+        /// <summary>
+        /// Gets the Casper App version installed in the Ledger device.
+        /// </summary>
         public async Task<CasperAppVersion> GetCasperAppVersion()
         {
             try
@@ -97,6 +113,9 @@ namespace Casper.Network.SDK.Web
             }
         }
 
+        /// <summary>
+        /// Gets information from the app running in the foreground of the Ledger device.
+        /// </summary>
         public async Task<AppInfo> GetAppInfo()
         {
             try
@@ -112,6 +131,10 @@ namespace Casper.Network.SDK.Web
             }
         }
         
+        /// <summary>
+        /// Selects an account based on an index starting with 0.
+        /// </summary>
+        /// <param name="acctIdx">Index of the new selected account.</param>
         public async Task SelectAccount(int acctIdx)
         {
             try
@@ -126,6 +149,11 @@ namespace Casper.Network.SDK.Web
             }
         }
 
+        /// <summary>
+        /// Requests to the Ledger device to show account information on the device screen.
+        /// The indicated account becomes the new selected account.
+        /// </summary>
+        /// <param name="acctIdx">Index of the new selected account.</param>
         public async Task ShowAccount(int acctIdx)
         {
             try
@@ -141,6 +169,13 @@ namespace Casper.Network.SDK.Web
             }
         }
 
+        /// <summary>
+        /// Requests the signature of a Deploy with the selected account.
+        /// </summary>
+        /// <param name="deploy">Deploy to be signed.</param>
+        /// <returns>True if the deploy has been signed and an approval added to it. False otherwise.</returns>
+        /// <exception cref="Exception">Returns an exception in case of rejection of the signature. Or if the Deploy is not supported
+        /// by the current Ledger app.</exception>
         public async Task<bool> RequestSignature(Deploy deploy)
         {
             try
