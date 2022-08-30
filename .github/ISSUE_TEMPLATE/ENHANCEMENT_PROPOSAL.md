@@ -1,6 +1,6 @@
 ---
 name: "⭐️ Enhancement proposal"
-about: File an enhancement proposal for the standard
+about: File an enhancement proposal for the SDK
 title: '[ENHANCEMENT PROPOSAL] the Title of Your Enhancement Proposal'
 labels: 'enhancement-proposal'
 assignees: ''
