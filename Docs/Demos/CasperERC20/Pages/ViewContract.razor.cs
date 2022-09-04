@@ -1,4 +1,5 @@
-﻿using Casper.Network.SDK.Clients;
+﻿using System.Numerics;
+using Casper.Network.SDK.Clients;
 using Casper.Network.SDK.Types;
 using CasperERC20.Components;
 using Microsoft.AspNetCore.Components;
@@ -10,7 +11,12 @@ public partial class ViewContract
     [Inject] private IERC20Client ERC20Client { get; set; }
 
     [Parameter] public string ContractHash { get; set; }
-    
+
+    private string _erc20Name;
+    private string _erc20Symbol;
+    private byte _erc20Decimals;
+    private BigInteger _erc20TotalSupply;
+
     private CasperClientError _detailsError;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -19,8 +25,13 @@ public partial class ViewContract
         {
             try
             {
-                await ERC20Client.SetContractHash(ContractHash);
-                await InvokeAsync(StateHasChanged);
+                ERC20Client.SetContractHash(ContractHash);
+                await Task.WhenAll(
+                    ERC20Client.GetName().ContinueWith(t => _erc20Name = t.Result),
+                    ERC20Client.GetSymbol().ContinueWith(t => _erc20Symbol = t.Result),
+                    ERC20Client.GetDecimals().ContinueWith(t => _erc20Decimals = t.Result),
+                    ERC20Client.GetTotalSupply().ContinueWith(t => _erc20TotalSupply = t.Result))
+                    .ContinueWith(t => InvokeAsync(StateHasChanged));
             }
             catch (Exception e)
             {
@@ -28,7 +39,7 @@ public partial class ViewContract
             }
         }
     }
-    
+
     private string _subjectPK;
     private MarkupString _balanceResult;
     private CasperClientError _getBalanceError;
@@ -36,7 +47,7 @@ public partial class ViewContract
     private async Task OnGetBalanceClick()
     {
         _getBalanceError.Hide();
-        
+
         try
         {
             var accHash = new AccountHashKey(PublicKey.FromHexString(_subjectPK));
@@ -65,7 +76,7 @@ public partial class ViewContract
     private async Task OnGetAllowanceClick()
     {
         _getAllowanceError.Hide();
-        
+
         try
         {
             var ownerAccHash = new AccountHashKey(PublicKey.FromHexString(_ownerPK));
