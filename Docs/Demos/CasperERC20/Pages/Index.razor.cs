@@ -31,8 +31,9 @@ public partial class Index
 
             var erc20Client = ServiceProvider.GetService<IERC20Client>();
             if (erc20Client == null) break;
-            
-            var task = erc20Client.SetContractHash(contractHash);
+
+            erc20Client.SetContractHash(contractHash);
+            var task = erc20Client.GetName();
             tasks.Add(task.ContinueWith(prevTask =>
             {
                 if (!prevTask.IsFaulted)

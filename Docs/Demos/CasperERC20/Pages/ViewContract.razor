@@ -8,7 +8,7 @@
             <RadzenTabs RenderMode="TabRenderMode.Client">
                 <Tabs>
                     <RadzenTabsItem Text="Details">
-                        @if (ERC20Client.Name == null)
+                        @if (_erc20Name == null)
                         {
                             <RadzenLabel Text="Loading..." Visible="@(_detailsError== null || !_detailsError.Visible)" />
                             <CasperClientError @ref="_detailsError" />
@@ -19,19 +19,19 @@
                                 <tbody>
                                 <tr>
                                     <th scope="row">Name</th>
-                                    <td>@ERC20Client.Name</td>
+                                    <td>@_erc20Name</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Symbol</th>
-                                    <td>@ERC20Client.Symbol</td>
+                                    <td>@_erc20Symbol</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Decimals</th>
-                                    <td>@ERC20Client.Decimals</td>
+                                    <td>@_erc20Decimals</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Total Supply</th>
-                                    <td>@ERC20Client.TotalSupply</td>
+                                    <td>@_erc20TotalSupply</td>
                                 </tr>
                                 </tbody>
                             </table>
