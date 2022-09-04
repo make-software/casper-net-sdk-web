@@ -25,4 +25,9 @@
     <Exec Command="npm run build" WorkingDirectory="npm_packages" />
   </Target-->
 
+  <ItemGroup>
+    <None Include="README_nuget.md" Pack="true" PackagePath="\" />
+    <None Include="..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>

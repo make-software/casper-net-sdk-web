@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Casper.Network.SDK.Web\Casper.Network.SDK.Web.csproj" />
+      <ProjectReference Include="..\..\..\Casper.Network.SDK.Web\Casper.Network.SDK.Web.csproj" />
     </ItemGroup>
 
 </Project>
