@@ -15,7 +15,7 @@ NOTE: the user must have access to the `make-software` GitHub organization.
 2. Run the docker build command
 
 ```
-$ docker build -f casper-net-sdk-web/Demos/Docker-NCTLWebExplorer/NCTLWebExplorer.Dockerfile -t casper-nctlwebexplorer .
+$ docker build -f casper-net-sdk-web/Docs/Demos/Docker-NCTLWebExplorer/NCTLWebExplorer.Dockerfile -t casper-nctlwebexplorer .
 ```
 
 3. Use `docker-compose` to start a container with `NCTL` and a second container with the explorer demo

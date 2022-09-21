@@ -6,7 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 COPY ./casper-net-sdk-web /app/casper-net-sdk-web
 
-WORKDIR "/app/casper-net-sdk-web/Demos/NCTLWebExplorer"
+WORKDIR "/app/casper-net-sdk-web/Docs/Demos/NCTLWebExplorer"
 RUN dotnet restore "NCTLWebExplorer.csproj"
 RUN dotnet build "NCTLWebExplorer.csproj" -c Release -o /app/build
 
