@@ -2,6 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0</FileVersion>
+    <PackageVersion>1.1.0</PackageVersion>
+    <Title>Casper.Network.SDK.Web</Title>
+    <Authors>make-software</Authors>
+    <PackageProjectUrl>https://github.com/make-software/casper-net-sdk-web</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/make-software/casper-net-sdk-web</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Casper SDK Web</PackageTags>
+    <PackageReadmeFile>README_nuget.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Description>
+      Casper .NET SDK for building web applications.
+    </Description>
+    <RootNamespace>Casper.Network.SDK.Web</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

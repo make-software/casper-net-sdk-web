@@ -10,10 +10,10 @@
       <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.2" />
       <PackageReference Include="Radzen.Blazor" Version="3.13.10" />
+      <PackageReference Include="Casper.Network.SDK.Clients" Version="1.1.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\..\casper-net-sdk-clients\Casper.Network.SDK.Clients\Casper.Network.SDK.Clients.csproj" />
       <ProjectReference Include="..\..\..\Casper.Network.SDK.Web\Casper.Network.SDK.Web.csproj" />
     </ItemGroup>
 

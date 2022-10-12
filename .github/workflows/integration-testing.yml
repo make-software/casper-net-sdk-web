@@ -1,0 +1,28 @@
+name: Integration testing
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  push:
+   branches: [ master ]
+  pull_request:
+   # The branches below must be a subset of the branches above
+   branches: [ master ]
+   
+jobs:
+  integration-test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal

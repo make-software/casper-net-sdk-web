@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CasperERC20", "CasperERC20.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casper.Network.SDK.Web", "..\..\..\Casper.Network.SDK.Web\Casper.Network.SDK.Web.csproj", "{8FA04011-0F71-4B82-A4BE-FA1811E041F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casper.Network.SDK.Clients", "..\..\..\..\casper-net-sdk-clients\Casper.Network.SDK.Clients\Casper.Network.SDK.Clients.csproj", "{154ED4A1-AB38-4D62-9B3E-0B36BABBA4D7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,9 +18,5 @@ Global
 		{8FA04011-0F71-4B82-A4BE-FA1811E041F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FA04011-0F71-4B82-A4BE-FA1811E041F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FA04011-0F71-4B82-A4BE-FA1811E041F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{154ED4A1-AB38-4D62-9B3E-0B36BABBA4D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{154ED4A1-AB38-4D62-9B3E-0B36BABBA4D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{154ED4A1-AB38-4D62-9B3E-0B36BABBA4D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{154ED4A1-AB38-4D62-9B3E-0B36BABBA4D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
