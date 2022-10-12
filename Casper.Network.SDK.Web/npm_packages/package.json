@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@ledgerhq/hw-transport-webusb": "^6.24.1",
-    "@zondax/ledger-casper": "^0.0.1",
+    "@zondax/ledger-casper": "^2.4.3",
     "buffer": "^6.0.3",
     "lodash": "^4.17.21",
     "stream-browserify": "^3.0.0"

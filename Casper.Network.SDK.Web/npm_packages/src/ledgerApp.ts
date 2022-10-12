@@ -141,7 +141,7 @@ const LedgerAppSingleton = (function () {
 
             console.log('sign completed: ' + response);
 
-            return SEC_KEY_PREFIX + response.signatureRS.toString('hex');
+            return SEC_KEY_PREFIX + response.signatureRSV.toString('hex');
         }
         return Promise.reject(new Error(`Not connected.`));
     }
