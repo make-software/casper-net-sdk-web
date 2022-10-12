@@ -188,6 +188,9 @@ namespace Casper.Network.SDK.Web
 
                 if (signature == null)
                     throw new Exception("User rejected the signature request.");
+
+                if (signature.Length > 130) // remove V byte if included
+                    signature = signature[..130];
                 
                 var approval = new DeployApproval()
                 {
