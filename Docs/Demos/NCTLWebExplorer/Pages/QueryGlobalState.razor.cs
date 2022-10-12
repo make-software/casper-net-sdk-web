@@ -23,7 +23,8 @@ public partial class QueryGlobalState
         {
             try
             {
-                var rpcResponse = await CasperRpcService.QueryGlobalState(GlobalStateKey, null,
+                var key = Casper.Network.SDK.Types.GlobalStateKey.FromString(GlobalStateKey);
+                var rpcResponse = await CasperRpcService.QueryGlobalState(key, null,
                     string.IsNullOrWhiteSpace(Path) ? null : Path);
                 var json = rpcResponse.Result.GetRawText();
                 

@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Casper.Network.SDK" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.13" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
@@ -28,6 +27,10 @@
   <ItemGroup>
     <None Include="README_nuget.md" Pack="true" PackagePath="\" />
     <None Include="..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\casper-net-sdk\Casper.Network.SDK\Casper.Network.SDK.csproj" />
   </ItemGroup>
 
 </Project>

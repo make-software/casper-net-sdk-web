@@ -4,6 +4,7 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+COPY ./casper-net-sdk /app/casper-net-sdk
 COPY ./casper-net-sdk-web /app/casper-net-sdk-web
 
 WORKDIR "/app/casper-net-sdk-web/Docs/Demos/NCTLWebExplorer"

@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casper.Network.SDK.Web", "Casper.Network.SDK.Web\Casper.Network.SDK.Web.csproj", "{37AA642A-1C52-4CF6-B4AA-F412FA423E5B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCTLWebExplorer", "Docs\Demos\NCTLWebExplorer\NCTLWebExplorer.csproj", "{479A9870-FF65-4037-9D86-2B23B4A13249}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casper.Network.SDK", "..\casper-net-sdk\Casper.Network.SDK\Casper.Network.SDK.csproj", "{78FE1C60-575E-4790-823C-8CE1FDF239CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{37AA642A-1C52-4CF6-B4AA-F412FA423E5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37AA642A-1C52-4CF6-B4AA-F412FA423E5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37AA642A-1C52-4CF6-B4AA-F412FA423E5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{479A9870-FF65-4037-9D86-2B23B4A13249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{479A9870-FF65-4037-9D86-2B23B4A13249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{479A9870-FF65-4037-9D86-2B23B4A13249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{479A9870-FF65-4037-9D86-2B23B4A13249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78FE1C60-575E-4790-823C-8CE1FDF239CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78FE1C60-575E-4790-823C-8CE1FDF239CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78FE1C60-575E-4790-823C-8CE1FDF239CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78FE1C60-575E-4790-823C-8CE1FDF239CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
