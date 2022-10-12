@@ -14,26 +14,12 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     
-    # Service containers to run with `runner-job`
-    services:
-      # Label used to access the service container
-      casper-nctl:
-        # Docker Hub image
-        image: makesoftware/casper-nctl:latest
-        options: --name casper-nctl
-        env:
-          DEPLOY_DELAY: '5sec'          
-        ports:
-          # Opens RPC, REST and events ports on the host and service container
-          - 11101:11101
-          - 14101:14101
-          - 18101:18101
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 6.0.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
