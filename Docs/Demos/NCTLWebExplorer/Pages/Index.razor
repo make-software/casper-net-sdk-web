@@ -8,6 +8,13 @@
 @code {
     protected override void OnInitialized()
     {
-        _navManager.NavigateTo("/blocks");
+        try
+        {
+            _navManager.NavigateTo("/blocks");
+        }
+        catch
+        {
+            // ignored
+        }
     }
 }

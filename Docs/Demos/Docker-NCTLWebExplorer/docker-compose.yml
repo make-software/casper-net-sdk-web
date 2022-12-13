@@ -21,3 +21,14 @@ services:
       Casper.Network.SDK.Web__SSEHost: 'mynctl-nctlwebexplorer'
     ports:
       - 8081:80
+  cors-anywhere:
+    container_name: cors-anywhere
+    profiles: ["cors-anywhere"]
+    build:
+      context: ./cors
+      dockerfile: cors-anywhere.Dockerfile
+    tty: true
+    environment:
+      PORT: 11100
+    ports:
+      - 11100:11100

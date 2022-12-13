@@ -59,6 +59,20 @@ public class EventStore
             _deploys.Add(deployProcessed);
             OnDeployAdded(deployProcessed);
         }
+        else if (evt.EventType == EventType.DeployAccepted)
+        {
+            var deployAccepted = evt.Parse<DeployAccepted>();
+
+            if (deployAccepted.Session is ModuleBytesDeployItem moduleBytesDeployItem)
+            {
+                //do something with moduleBytesDeployItem
+            }
+            else if (deployAccepted.Session is TransferDeployItem transferDeployItem)
+            {
+                //do something with transferDeployItem
+            }
+            // same with other session types
+        }
     }
     
     protected virtual void OnBlockAdded(Block block)
