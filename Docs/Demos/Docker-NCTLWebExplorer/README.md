@@ -21,7 +21,7 @@ $ docker build -f casper-net-sdk-web/Docs/Demos/Docker-NCTLWebExplorer/NCTLWebEx
 3. Use `docker-compose` to start a container with `NCTL` and a second container with the explorer demo
 
 ```
-$ cd casper-net-sdk-web/Demos/Docker-NCTLWebExplorer/
+$ cd casper-net-sdk-web/Docs/Demos/Docker-NCTLWebExplorer/
 $ docker-compose up
 ```
 
