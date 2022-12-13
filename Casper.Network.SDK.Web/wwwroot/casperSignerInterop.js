@@ -31,22 +31,28 @@ export function addEventListeners(instance) {
     dotNetSignerInstance = instance;
 
     window.addEventListener('signer:connected', msg => {
-        signerEventHandler(msg.detail);
+        if(typeof msg.detail !== 'string')
+            signerEventHandler(msg.detail);
     });
     window.addEventListener('signer:disconnected', msg => {
-        signerEventHandler({...msg.detail, activeKey:''});
+        if(typeof msg.detail !== 'string')
+            signerEventHandler({...msg.detail, activeKey:''});
     });
     window.addEventListener('signer:tabUpdated', msg => {
-        signerEventHandler(msg.detail);
+        if(typeof msg.detail !== 'string')
+            signerEventHandler(msg.detail);
     });
     window.addEventListener('signer:activeKeyChanged', msg => {
-        signerEventHandler(msg.detail);
+        if(typeof msg.detail !== 'string')
+            signerEventHandler(msg.detail);
     });
     window.addEventListener('signer:locked', msg => {
-        signerEventHandler({...msg.detail, activeKey:''});
+        if(typeof msg.detail !== 'string')
+            signerEventHandler({...msg.detail, activeKey:''});
     });
     window.addEventListener('signer:unlocked', msg => {
-        signerEventHandler(msg.detail);
+        if(typeof msg.detail !== 'string')
+            signerEventHandler(msg.detail);
     });
 }
 

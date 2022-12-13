@@ -44,6 +44,14 @@ namespace Casper.Network.SDK.Web
         }
         
         /// <summary>
+        /// Configures the DI container to create scoped instances of the Wallet helper service class.
+        /// </summary>
+        public static void AddCasperWalletInterop(this IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddScoped<CasperWalletInterop>();
+        }
+        
+        /// <summary>
         /// Configures the DI container to create scoped instances of the Ledger helper service class.
         /// </summary>
         public static void AddCasperLedgerInterop(this IServiceCollection serviceCollection)
