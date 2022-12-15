@@ -143,6 +143,9 @@ namespace Casper.Network.SDK.Web
             {
                 var walletResult = await _callWalletInterop<string>("sign", json, srcPk.ToLower(), tgtPk.ToLower());
 
+                if (string.IsNullOrWhiteSpace(walletResult))
+                    return false;
+                
                 var approval = new DeployApproval()
                 {
                     Signer =

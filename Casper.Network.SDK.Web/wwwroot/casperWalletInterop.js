@@ -140,7 +140,10 @@ export async function sign(deploystr,
             sourcePublicKey,
             targetPublicKey
         );
-        return sourcePublicKey.slice(0,2) + toHexString(Object.values(result.signature));
+        if(result.cancelled === true)
+            return '';
+        
+        return sourcePublicKey.slice(0,2) + result.signatureHex;
     }
 
     return Promise.reject(new Error(errorWalletNotPresent));
