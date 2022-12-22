@@ -2,15 +2,7 @@
 
 function setCasperWalletState(_connected, _unlocked, _activePk) {    
     casperWalletState = { isConnected:_connected, isUnlocked: _unlocked, activePK: _activePk };
-    console.log("WALLET.js: Setting new state: "); console.log(casperWalletState);
 }
-
-window.addEventListener('signer:initialState', msg => {
-    setCasperWalletState(msg.detail.isConnected||false, !msg.detail.isLocked, msg.detail.activeKey||'');
-    if (typeof dotNetWalletInstance !=='undefined')
-        dotNetWalletInstance.invokeMethodAsync('UpdateState',
-            msg.detail.isConnected || false, !msg.detail.isLocked, msg.detail.activeKey || '');
-})
 
 export function isCasperWalletExtensionPresent() {
     try {
@@ -32,40 +24,38 @@ export function getCasperWalletState() {
 
 var dotNetWalletInstance;
 
-function signerEventHandler(evtDetail) {
+function walletEventHandler(evtName, evtDetail) {
     setCasperWalletState(evtDetail.isConnected || false,
         !evtDetail.isLocked || false, evtDetail.activeKey || '');
 
+    console.log("walletEventHandler", evtName, evtDetail)
     if (typeof dotNetWalletInstance !== 'undefined')
         dotNetWalletInstance.invokeMethodAsync('UpdateState',
-            evtDetail.isConnected || false, !evtDetail.isLocked || false, evtDetail.activeKey || '');
+            evtDetail.isConnected || false, !evtDetail.isLocked || false, evtDetail.activeKey || '', evtName);
 }
-
 
 export function addEventListeners(instance) {
 
     dotNetWalletInstance = instance;
 
-    window.addEventListener('signer:connected', msg => {
-        if(typeof msg.detail === 'string')
-            signerEventHandler(JSON.parse(msg.detail));
+    window.addEventListener(CasperWalletEventTypes.Connected, msg => {
+        walletEventHandler(CasperWalletEventTypes.Connected, JSON.parse(msg.detail));
     });
-    window.addEventListener('signer:disconnected', msg => {
-        if(typeof msg.detail === 'string')
-            signerEventHandler({...JSON.parse(msg.detail), activeKey:''});
+    window.addEventListener(CasperWalletEventTypes.Disconnected, msg => {
+        walletEventHandler(CasperWalletEventTypes.Disconnected, {...JSON.parse(msg.detail), activeKey:''});
     });
-    window.addEventListener('signer:activeKeyChanged', msg => {
-        if(typeof msg.detail === 'string')
-            signerEventHandler(JSON.parse(msg.detail));
+    window.addEventListener(CasperWalletEventTypes.ActiveKeyChanged, msg => {
+        walletEventHandler(CasperWalletEventTypes.ActiveKeyChanged, JSON.parse(msg.detail));
     });
-    window.addEventListener('signer:locked', msg => {
-        if(typeof msg.detail === 'string')
-            signerEventHandler({...JSON.parse(msg.detail), activeKey:''});
+    window.addEventListener(CasperWalletEventTypes.Locked, msg => {
+        walletEventHandler(CasperWalletEventTypes.Locked, {...JSON.parse(msg.detail), activeKey:''});
     });
-    window.addEventListener('signer:unlocked', msg => {
-        if(typeof msg.detail === 'string')
-            signerEventHandler(JSON.parse(msg.detail));
+    window.addEventListener(CasperWalletEventTypes.Unlocked, msg => {
+        walletEventHandler(CasperWalletEventTypes.Unlocked, JSON.parse(msg.detail));
     });
+    window.addEventListener(CasperWalletEventTypes.TabChanged, msg => {
+        walletEventHandler(CasperWalletEventTypes.TabChanged, JSON.parse(msg.detail));
+    })
 }
 
 export async function getVersion() {
@@ -94,7 +84,7 @@ export async function requestConnection() {
         var activePk = await CasperWalletProvider().getActivePublicKey();
         if(isConnected && activePk !== undefined)
         {
-            signerEventHandler({ isConnected: true, isLocked: false, activeKey: activePk });
+            walletEventHandler(CasperWalletEventTypes.Unlocked, { isConnected: true, isLocked: false, activeKey: activePk });
             return;
         }
         await CasperWalletProvider().requestConnection();
@@ -110,11 +100,8 @@ export async function disconnectFromSite() {
 }
 
 export async function switchAccount() {
-    //
-    // TODO: update this method when the extension provides a switch account api
-    //
     if (isCasperWalletExtensionPresent())
-        return CasperWalletProvider().requestConnection();
+        return CasperWalletProvider().requestSwitchAccount();
     throw new Error(errorWalletNotPresent);
 }
 
@@ -123,12 +110,6 @@ export async function getActivePublicKey() {
         return CasperWalletProvider().getActivePublicKey();
 
     return Promise.reject(new Error(errorWalletNotPresent));
-}
-
-function toHexString(byteArray) {
-    return Array.from(byteArray, function(byte) {
-        return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-    }).join('')
 }
 
 export async function sign(deploystr,

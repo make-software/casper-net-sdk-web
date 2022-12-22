@@ -17,13 +17,13 @@ export function getCasperSignerState() {
 
 var dotNetSignerInstance;
 
-function signerEventHandler(evtDetail) {
+function signerEventHandler(evtName, evtDetail) {
     setCSState(evtDetail.isConnected || false,
         evtDetail.isUnlocked, evtDetail.activeKey || '');
 
     if (typeof dotNetSignerInstance !== 'undefined')
         dotNetSignerInstance.invokeMethodAsync('UpdateState',
-            evtDetail.isConnected || false, evtDetail.isUnlocked, evtDetail.activeKey || '');
+            evtDetail.isConnected || false, evtDetail.isUnlocked, evtDetail.activeKey || '', evtName);
 }
 
 export function addEventListeners(instance) {
@@ -32,27 +32,27 @@ export function addEventListeners(instance) {
 
     window.addEventListener('signer:connected', msg => {
         if(typeof msg.detail !== 'string')
-            signerEventHandler(msg.detail);
+            signerEventHandler('signer:connected', msg.detail);
     });
     window.addEventListener('signer:disconnected', msg => {
         if(typeof msg.detail !== 'string')
-            signerEventHandler({...msg.detail, activeKey:''});
+            signerEventHandler('signer:disconnected', {...msg.detail, activeKey:''});
     });
     window.addEventListener('signer:tabUpdated', msg => {
         if(typeof msg.detail !== 'string')
-            signerEventHandler(msg.detail);
+            signerEventHandler('signer:tabUpdated', msg.detail);
     });
     window.addEventListener('signer:activeKeyChanged', msg => {
         if(typeof msg.detail !== 'string')
-            signerEventHandler(msg.detail);
+            signerEventHandler('signer:activeKeyChanged', msg.detail);
     });
     window.addEventListener('signer:locked', msg => {
         if(typeof msg.detail !== 'string')
-            signerEventHandler({...msg.detail, activeKey:''});
+            signerEventHandler('signer:locked', {...msg.detail, activeKey:''});
     });
     window.addEventListener('signer:unlocked', msg => {
         if(typeof msg.detail !== 'string')
-            signerEventHandler(msg.detail);
+            signerEventHandler('signer:unlocked', msg.detail);
     });
 }
 

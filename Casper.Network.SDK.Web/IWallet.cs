@@ -18,7 +18,7 @@ namespace Casper.Network.SDK.Web
 
         Task AddEventListeners();
 
-        Task UpdateState(bool isConnected, bool isUnlocked, string activePublicKey);
+        Task UpdateState(bool isConnected, bool isUnlocked, string activePublicKey, string eventName);
 
         Task<string> GetVersion();
 

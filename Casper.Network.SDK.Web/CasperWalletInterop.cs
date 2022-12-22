@@ -10,12 +10,12 @@ namespace Casper.Network.SDK.Web
     /// <summary>
     /// Delegate to receive wallet state update events.
     /// </summary>
-    public delegate void WalletStateUpdateEventHandler(bool isConnected, bool isUnlocked, string activePublicKey);
+    public delegate void WalletStateUpdateEventHandler(bool isConnected, bool isUnlocked, string activePublicKey, string eventName);
 
     /// <summary>
     /// Delegate to receive wallet state update events.
     /// </summary>
-    public delegate Task WalletStateUpdateEventHandlerAsync(bool isConnected, bool isUnlocked, string activePublicKey);
+    public delegate Task WalletStateUpdateEventHandlerAsync(bool isConnected, bool isUnlocked, string activePublicKey, string eventName);
     
     /// <summary>
     /// Service class to interact with Wallet extension in the browser.
@@ -72,14 +72,14 @@ namespace Casper.Network.SDK.Web
         /// by the user.
         /// </summary>
         [JSInvokable("UpdateState")]
-        public async Task UpdateState(bool isConnected, bool isUnlocked, string activePublicKey)
+        public async Task UpdateState(bool isConnected, bool isUnlocked, string activePublicKey, string eventName)
         {
             _logger.LogDebug("Wallet Updated state: " +
-                $"{{IsConnected:{isConnected}, IsUnlocked:{isUnlocked}, ActivePK:{activePublicKey}}}");
-            OnStateUpdate?.Invoke(isConnected, isUnlocked, activePublicKey);
+                $"{{IsConnected:{isConnected}, IsUnlocked:{isUnlocked}, ActivePK:{activePublicKey}, Event:{eventName}}}");
+            OnStateUpdate?.Invoke(isConnected, isUnlocked, activePublicKey, eventName);
 
             if (OnStateUpdateAsync != null)
-                await OnStateUpdateAsync(isConnected, isUnlocked, activePublicKey);
+                await OnStateUpdateAsync(isConnected, isUnlocked, activePublicKey, eventName);
         }
 
         /// <summary>
