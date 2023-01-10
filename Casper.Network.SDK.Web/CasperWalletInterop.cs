@@ -17,6 +17,16 @@ namespace Casper.Network.SDK.Web
     /// </summary>
     public delegate Task WalletStateUpdateEventHandlerAsync(bool isConnected, bool isUnlocked, string activePublicKey, string eventName);
     
+    public struct CasperWalletEventTypes
+    {
+        public const string ACTIVE_KEY_CHANGED = "casper-wallet:activeKeyChanged";
+        public const string CONNECTED = "casper-wallet:connected";
+        public const string DISCONNECTED = "casper-wallet:disconnected";
+        public const string LOCKED = "casper-wallet:locked";
+        public const string TAB_CHANGED = "casper-wallet:tabChanged";
+        public const string UNLOCKED = "casper-wallet:unlocked";
+    }
+    
     /// <summary>
     /// Service class to interact with Wallet extension in the browser.
     /// </summary>

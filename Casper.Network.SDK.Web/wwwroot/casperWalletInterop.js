@@ -28,7 +28,6 @@ function walletEventHandler(evtName, evtDetail) {
     setCasperWalletState(evtDetail.isConnected || false,
         !evtDetail.isLocked || false, evtDetail.activeKey || '');
 
-    console.log("walletEventHandler", evtName, evtDetail)
     if (typeof dotNetWalletInstance !== 'undefined')
         dotNetWalletInstance.invokeMethodAsync('UpdateState',
             evtDetail.isConnected || false, !evtDetail.isLocked || false, evtDetail.activeKey || '', evtName);
