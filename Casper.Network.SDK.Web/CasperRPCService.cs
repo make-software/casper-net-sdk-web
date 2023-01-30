@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -216,6 +217,13 @@ namespace Casper.Network.SDK.Web
             return await CasperClient.QueryGlobalStateWithBlockHash(key, blockHash, path);
         }
 
+        public async Task<RpcResponse<GetItemResult>> QueryState(string key, List<string> path, string blockHash)
+        {
+            _logger.LogInformation($"Call to QueryGlobalState");
+
+            return await CasperClient.QueryState(key, path, blockHash);
+        }
+        
         /// <summary>
         /// Request a purse's balance from the network.
         /// </summary>
