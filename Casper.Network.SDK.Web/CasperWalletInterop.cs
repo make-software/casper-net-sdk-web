@@ -178,8 +178,10 @@ namespace Casper.Network.SDK.Web
         /// <param name="message">Message to sign.</param>
         /// <param name="signingPublicKey">Public key from the key pair that signs the message.</param>
         /// <returns></returns>
-        public async Task<string> SignMessage(string message, string signingPublicKey) =>
-            await _callWalletInterop<string>("signMessage", message, signingPublicKey);
+        public async Task<string> SignMessage(string message, string signingPublicKey)
+        {
+            return await _callWalletInterop<string>("signMessage", message, signingPublicKey);
+        }
 
         public async ValueTask DisposeAsync()
         {

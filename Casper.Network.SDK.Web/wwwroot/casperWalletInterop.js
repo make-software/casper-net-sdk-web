@@ -130,8 +130,15 @@ export async function sign(deploystr,
 }
 
 export async function signMessage(message, signingPublicKey) {
-    if (isCasperWalletExtensionPresent())
-        return CasperWalletProvider().signMessage(message, signingPublicKey);
+    if (isCasperWalletExtensionPresent()) {
+        var result = await CasperWalletProvider().signMessage(
+            message, signingPublicKey
+        );
+        if(result.cancelled === true)
+            return '';
+        
+        return result.signatureHex;
+    }
 
     return Promise.reject(new Error(errorWalletNotPresent));
 }
