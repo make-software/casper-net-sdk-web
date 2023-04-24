@@ -71,7 +71,7 @@ export async function getVersion() {
 
 export async function isConnected() {
     if (isCasperWalletExtensionPresent())
-        return await CasperWalletProvider().isConnected();
+        return CasperWalletProvider().isConnected().then(r => r).catch(r => false);
 
     return Promise.reject(new Error(errorWalletNotPresent));
 }
@@ -80,8 +80,8 @@ export async function requestConnection() {
     if (isCasperWalletExtensionPresent())
     {
         var isConnected = await CasperWalletProvider().isConnected();
-        var activePk = await CasperWalletProvider().getActivePublicKey();
-        if(isConnected && activePk !== undefined)
+        var activePk = await CasperWalletProvider().getActivePublicKey().then(k => k).catch(err => null);
+        if(isConnected && activePk !== null)
         {
             walletEventHandler(CasperWalletEventTypes.Unlocked, { isConnected: true, isLocked: false, activeKey: activePk });
             return;
@@ -106,7 +106,7 @@ export async function switchAccount() {
 
 export async function getActivePublicKey() {
     if (isCasperWalletExtensionPresent())
-        return CasperWalletProvider().getActivePublicKey();
+        return CasperWalletProvider().getActivePublicKey().then(k => k).catch(err => null);
 
     return Promise.reject(new Error(errorWalletNotPresent));
 }
