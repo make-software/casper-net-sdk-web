@@ -28,6 +28,8 @@ function walletEventHandler(evtName, evtDetail) {
     setCasperWalletState(evtDetail.isConnected || false,
         !evtDetail.isLocked || false, evtDetail.activeKey || '');
 
+    console.info("CasperWalletInterop", getCasperWalletState());
+    
     if (typeof dotNetWalletInstance !== 'undefined')
         dotNetWalletInstance.invokeMethodAsync('UpdateState',
             evtDetail.isConnected || false, !evtDetail.isLocked || false, evtDetail.activeKey || '', evtName);
@@ -79,7 +81,7 @@ export async function isConnected() {
 export async function requestConnection() {
     if (isCasperWalletExtensionPresent())
     {
-        var isConnected = await CasperWalletProvider().isConnected();
+        var isConnected = await CasperWalletProvider().isConnected().then(r => r).catch(r => false);;
         var activePk = await CasperWalletProvider().getActivePublicKey().then(k => k).catch(err => null);
         if(isConnected && activePk !== null)
         {
