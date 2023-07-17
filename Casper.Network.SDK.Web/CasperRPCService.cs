@@ -164,6 +164,20 @@ namespace Casper.Network.SDK.Web
         /// Request the stored value in a global state key.
         /// </summary>
         /// <param name="key">The global state key formatted as a string to query the value from the network.</param>
+        /// <param name="height">Height of the block to check the stored value in.</param>
+        /// <param name="path">The path components starting from the key as base (use '/' as separator).</param>
+        public async Task<RpcResponse<QueryGlobalStateResult>> QueryGlobalState(string key, int height,
+            string path = null)
+        {            
+            _logger.LogInformation($"Call to QueryGlobalState");
+
+            return await CasperClient.QueryGlobalState(key, height, path);
+        }
+        
+        /// <summary>
+        /// Request the stored value in a global state key.
+        /// </summary>
+        /// <param name="key">The global state key formatted as a string to query the value from the network.</param>
         /// <param name="stateRootHash">Hash of the state root. Null for the most recent stored value..</param>
         /// <param name="path">The path components starting from the key as base (use '/' as separator).</param>
         public async Task<RpcResponse<QueryGlobalStateResult>> QueryGlobalState(string key, string stateRootHash = null,
@@ -243,6 +257,20 @@ namespace Casper.Network.SDK.Web
 
             return await CasperClient.GetAccountBalance(purseURef, stateRootHash);
         }
+        
+        /// <summary>
+        /// Request the balance information of an account given its account hash key.
+        /// </summary>
+        /// <param name="accountHash">The account hash of the account to request the balance.</param>
+        /// <param name="stateRootHash">Hash of the state root. Null to get latest available.</param>
+        public async Task<RpcResponse<GetBalanceResult>> GetAccountBalance(AccountHashKey accountHash, 
+            string stateRootHash = null)
+        {
+            _logger.LogInformation(
+                $"Call to GetAccountBalance AccountHash: {accountHash}");
+
+            return await CasperClient.GetAccountBalance(accountHash, stateRootHash);
+        }
 
         /// <summary>
         /// Request the balance information of an account given its public key.
@@ -258,6 +286,90 @@ namespace Casper.Network.SDK.Web
             return await CasperClient.GetAccountBalance(publicKey, stateRootHash);
         }
 
+        /// <summary>
+        /// Request a purse's balance from the network.
+        /// </summary>
+        /// <param name="purseURef">Purse URef key.</param>
+        /// <param name="blockHash">Hash of the block. Null to get latest available.</param>
+        public async Task<RpcResponse<GetBalanceResult>> GetAccountBalanceWithBlockHash(URef purseURef,
+            string blockHash = null)
+        {
+            _logger.LogInformation(
+                $"Call to GetAccountBalance URef: {purseURef}");
+            
+            return await CasperClient.GetAccountBalanceWithBlockHash(purseURef, blockHash);
+        }
+        
+        /// <summary>
+        /// Request the balance information of an account given its account hash key.
+        /// </summary>
+        /// <param name="accountHash">The account hash of the account to request the balance.</param>
+        /// <param name="blockHash">Hash of the block. Null to get latest available.</param>
+        public async Task<RpcResponse<GetBalanceResult>> GetAccountBalanceWithBlockHash(AccountHashKey accountHash, 
+            string blockHash = null)
+        {
+            _logger.LogInformation(
+                $"Call to GetAccountBalance AccountHash: {accountHash}");
+
+            return await CasperClient.GetAccountBalanceWithBlockHash(accountHash, blockHash);
+        }
+        
+        /// <summary>
+        /// Request the balance information of an account given its public key.
+        /// </summary>
+        /// <param name="publicKey">The public key of the account to request the balance.</param>
+        /// <param name="blockHash">Hash of the block. Null to get latest available.</param>
+        public async Task<RpcResponse<GetBalanceResult>> GetAccountBalanceWithBlockHash(PublicKey publicKey, 
+            string blockHash = null)
+        {
+            _logger.LogInformation(
+                $"Call to GetAccountBalance PublicKey: {publicKey}");
+
+            return await CasperClient.GetAccountBalanceWithBlockHash(publicKey, blockHash);
+        }
+        
+        /// <summary>
+        /// Request a purse's balance from the network.
+        /// </summary>
+        /// <param name="purseURef">Purse URef key.</param>
+        /// <param name="blockHeight">Height of the block.</param>
+        public async Task<RpcResponse<GetBalanceResult>> GetAccountBalance(URef purseURef,
+            int blockHeight)
+        {
+            _logger.LogInformation(
+                $"Call to GetAccountBalance URef: {purseURef}");
+            
+            return await CasperClient.GetAccountBalance(purseURef, blockHeight);
+        }
+        
+        /// <summary>
+        /// Request the balance information of an account given its account hash key.
+        /// </summary>
+        /// <param name="accountHash">The account hash of the account to request the balance.</param>
+        /// <param name="blockHeight">Height of the block.</param>
+        public async Task<RpcResponse<GetBalanceResult>> GetAccountBalance(AccountHashKey accountHash, 
+            int blockHeight)
+        {
+            _logger.LogInformation(
+                $"Call to GetAccountBalance AccountHash: {accountHash}");
+
+            return await CasperClient.GetAccountBalance(accountHash, blockHeight);
+        }
+        
+        /// <summary>
+        /// Request the balance information of an account given its public key.
+        /// </summary>
+        /// <param name="publicKey">The public key of the account to request the balance.</param>
+        /// <param name="blockHeight">Height of the block.</param>
+        public async Task<RpcResponse<GetBalanceResult>> GetAccountBalance(PublicKey publicKey, 
+            int blockHeight)
+        {
+            _logger.LogInformation(
+                $"Call to GetAccountBalance PublicKey: {publicKey}");
+
+            return await CasperClient.GetAccountBalance(publicKey, blockHeight);
+        }
+        
         /// <summary>
         /// Send a Deploy to the network for its execution.
         /// </summary>
@@ -386,6 +498,28 @@ namespace Casper.Network.SDK.Web
         }
         
         /// <summary>
+        /// Request current Era Info from the network given a block hash
+        /// </summary>
+        /// <param name="blockHash">Block hash. Null for the latest block.</param>
+        public async Task<RpcResponse<GetEraSummaryResult>> GetEraSummary(string blockHash = null)
+        {
+            _logger.LogInformation($"Call to GetEraSummary");
+
+            return await CasperClient.GetEraSummary(blockHash);
+        }
+        
+        /// <summary>
+        /// Request current Era Info from the network given a block hash
+        /// </summary>
+        /// <param name="blockHeight">Block height.</param>
+        public async Task<RpcResponse<GetEraSummaryResult>> GetEraSummary(int blockHeight)
+        {
+            _logger.LogInformation($"Call to GetEraSummary");
+
+            return await CasperClient.GetEraSummary(blockHeight);
+        }
+        
+        /// <summary>
         /// Lookup a dictionary item from its dictionary item key.
         /// </summary>
         /// <param name="dictionaryItem">The dictionary item key to retrieve.</param>
@@ -463,6 +597,16 @@ namespace Casper.Network.SDK.Web
             _logger.LogInformation($"Call to GetRpcSchema");
 
             return await CasperClient.GetRpcSchema();
+        }
+        
+        /// <summary>
+        /// Request the RPC Json schema to the network node.
+        /// </summary>
+        public async Task<RpcResponse<GetChainspecResult>> GetChainspec()
+        {
+            _logger.LogInformation($"Call to GetChainspec");
+
+            return await CasperClient.GetChainspec();
         }
     }
 }

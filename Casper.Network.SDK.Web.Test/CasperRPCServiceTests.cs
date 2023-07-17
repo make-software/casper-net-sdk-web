@@ -75,22 +75,20 @@ public class CasperRPCServiceTests
         var result = rpcResponse.Parse();
         Assert.That(result.Block.Hash, Has.Length.EqualTo(64));
 
-        const string blockHash = "ce96c6702b89370ba3dd73fec311adc748c5234930a68bc4569c7f657257aab5";
         var rpcResponse2 =
-            await _casperClient.GetBlock(blockHash);
+            await _casperClient.GetBlock(result.Block.Hash);
         Assert.That(rpcResponse2, Is.Not.Null);
 
         var result2 = rpcResponse2.Parse();
-        Assert.That(result2.Block.Hash, Is.EqualTo(blockHash));
+        Assert.That(result2.Block.Hash, Is.EqualTo(result.Block.Hash));
 
-        const int blockHeight = 1_098_765;
         var rpcResponse3 =
-            await _casperClient.GetBlock(blockHeight);
+            await _casperClient.GetBlock((int)result.Block.Header.Height);
         Assert.That(rpcResponse3, Is.Not.Null);
 
         var result3 = rpcResponse3.Parse();
-        Assert.That(result3.Block.Header.Height, Is.EqualTo(blockHeight));
-        Assert.That(result3.Block.Hash, Is.EqualTo(blockHash));
+        Assert.That(result3.Block.Header.Height, Is.EqualTo((int)result.Block.Header.Height));
+        Assert.That(result3.Block.Hash, Is.EqualTo(result.Block.Hash));
     }
         
     [Test]
@@ -109,7 +107,7 @@ public class CasperRPCServiceTests
     [Test]
     public async Task GetAccountTest()
     {
-        var account = PublicKey.FromHexString("018afa98ca4be12d613617f7339a2d576950a2f9a92102ca4d6508ee31b54d2c02");
+        var account = PublicKey.FromHexString("0146c64D0506C486f2B19F9cF73479fbA550f33227b6Ec1C12E58B437D2680E96D");
         try
         {
             var response = await _casperClient.GetAccountInfo(account, 1);

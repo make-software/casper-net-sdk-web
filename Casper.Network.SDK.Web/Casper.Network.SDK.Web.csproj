@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0</FileVersion>
-    <PackageVersion>1.1.0</PackageVersion>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0</FileVersion>
+    <PackageVersion>2.0.0</PackageVersion>
     <Title>Casper.Network.SDK.Web</Title>
     <Authors>make-software</Authors>
     <PackageProjectUrl>https://github.com/make-software/casper-net-sdk-web</PackageProjectUrl>
@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Casper.Network.SDK" Version="1.1.0" />
+    <!--PackageReference Include="Casper.Network.SDK" Version="2.0.0" /-->
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.13" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
@@ -43,5 +43,9 @@
   <ItemGroup>
     <None Include="README_nuget.md" Pack="true" PackagePath="\" />
     <None Include="..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\casper-net-sdk\Casper.Network.SDK\Casper.Network.SDK.csproj" />
   </ItemGroup>  
 </Project>
