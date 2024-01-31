@@ -4,13 +4,12 @@
 
 To build a docker image with the NCTL-WebExplorer demo, follow these instructions:
 
-1. Clone the Git repository
+1. Clone the following Git repositories
 
 ```
+$ git clone -b v1.1.1 https://github.com/make-software/casper-net-sdk.git
 $ git clone -b nctl-webexplorer https://github.com/make-software/casper-net-sdk-web.git
 ```
-
-NOTE: the user must have access to the `make-software` GitHub organization.
 
 2. Run the docker build command
 
