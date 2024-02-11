@@ -98,6 +98,12 @@ public class CasperLedgerInteropTest
         Assert.That(_jsMock.Invocations.Count, Is.Not.Zero);
     }
 
+    [OneTimeTearDown]
+    public async Task DisposeArtifacts()
+    {
+        await _applicationFactory.DisposeAsync();
+    }
+    
     // [Test]
     // public async Task GetVersionTest()
     // {
