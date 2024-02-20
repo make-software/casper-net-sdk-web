@@ -46,6 +46,12 @@ public class CasperRPCServiceTests
         Assert.That(_casperClient, Is.Not.Null);
     }
 
+    [TearDown]
+    public async Task DisposeArtifacts()
+    {
+        await _applicationFactory.DisposeAsync();
+    }
+    
     [Test]
     public async Task GetStateRootHashTest()
     {

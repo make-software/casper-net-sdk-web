@@ -1,6 +1,6 @@
 {
   "Casper.Network.SDK.Web" : {
-    "NodeAddress": "https://casper-node-proxy.dev.make.services/rpc",
+    "NodeAddress": "http://52.35.59.254:7777/rpc",
     "ClientFactory": "caspernode",
     "ChainName": "casper-test",
     "SSEHost": "127.0.0.1",
