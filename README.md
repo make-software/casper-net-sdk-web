@@ -13,6 +13,10 @@ The main components are:
 
 The main SDK documentation, examples and tutorials can be found [here](https://make-software.github.io/casper-net-sdk/). Articles for the web extensions is in progress and will be added soon to the site.
 
+## Prerequisites
+
+To use this Clients library you'll need to have .NET 5 or later installed in your system.
+
 ## Get started
 
 This library is published as a nuget package in [nuget.org](https://www.nuget.org/packages/Casper.Network.SDK.Clients).
