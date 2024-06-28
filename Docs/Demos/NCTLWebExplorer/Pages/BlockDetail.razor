@@ -15,40 +15,33 @@ else
                 <div class="row">
                     <div class="col-md-4">
                         <div >Block Height</div>
-                        <b>@(_block.Header.Height)</b>
+                        <b>@(_block.Height)</b>
                         <div class="mt-1">Era Id</div>
-                        <b>@(_block.Header.EraId)</b>
+                        <b>@(_block.EraId)</b>
                         <div class="mt-1">Switch Block</div>
-                        <b>@(_block.Header.EraEnd != null ? "Yes" : "No")</b>
+                        <b>@(_block.EraEnd != null ? "Yes" : "No")</b>
                     </div>
                     <div class="col-md-8">
                         <div>Timestamp</div>
-                        <b>@(_block.Header.Timestamp)</b>
+                        <b>@(_block.Timestamp)</b>
                         <div class="mt-1">Parent Hash</div>
                         <b>
-                            <a href="/blocks/@(_block.Header.ParentHash)">@(_block.Header.ParentHash)</a>
+                            <a href="/blocks/@(_block.ParentHash)">@(_block.ParentHash)</a>
                         </b>
                         <div class="mt-1">State Root Hash</div>
-                        <b>@(_block.Header.StateRootHash)</b>
+                        <b>@(_block.StateRootHash)</b>
                     </div>
                 </div>
             </RadzenCard>
             <RadzenCard class="mt-4">
-                <h3 class="h5">Deploys</h3>
-                @if (_block.Body.DeployHashes.Count == 0 && _block.Body.TransferHashes.Count == 0)
+                <h3 class="h5">Transactions</h3>
+                @if (TransactionsCount() == 0)
                 {
-                    <span>No deploys in this block.</span>
+                    <span>No transactions in this block.</span>
                 }
                 else
                 {
-                    foreach (var deploy in _block.Body.DeployHashes)
-                    {
-                        <a href="/deploys/@(deploy)">@(deploy)</a>
-                    }
-                    foreach (var deploy in _block.Body.TransferHashes)
-                    {
-                        <a href="/deploys/@(deploy)">@(deploy)</a>
-                    }
+                    <TransactionsTable Transactions="@_block.Transactions" />
                 }
             </RadzenCard>
 

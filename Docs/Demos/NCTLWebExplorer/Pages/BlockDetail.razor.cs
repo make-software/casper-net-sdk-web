@@ -2,6 +2,7 @@
 using Casper.Network.SDK.Types;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.AspNetCore.Html;
 
 namespace NCTLWebExplorer.Pages;
 
@@ -64,5 +65,15 @@ public partial class BlockDetail
             var blockResult = response.Parse();
             _block = blockResult.Block;
         }
+    }
+    
+    private uint TransactionsCount()
+    {
+        // uint count = 0;
+        // for(int i=0; i<=5; i++)
+        //     if (_block.Body.Transactions.Keys.Contains(i.ToString()))
+        //         count += (uint)_block.Body.Transactions[i.ToString()].Count;
+        // return count;
+        return (uint)_block.Transactions.Count;
     }
 }

@@ -159,6 +159,54 @@ namespace Casper.Network.SDK.Web
 
             return await CasperClient.GetAccountInfo(publicKey, blockHeight);
         }
+        
+        /// <summary>
+        /// Returns an AddressableEntity or a legacy Accountfrom the network for a Block from the network
+        /// </summary>
+        /// <param name="entityIdentifier">A PublicKey, an AccoountHashKey, or an AddressableEntityKey</param>
+        /// <param name="blockHash">A block hash for which the information of the entity is queried. Null for most recent information.</param>
+        public async Task<RpcResponse<GetEntityResult>> GetEntity(IEntityIdentifier entityIdentifier, string blockHash = null)
+        {
+            _logger.LogInformation($"Call to GetEntity");
+
+            return await CasperClient.GetEntity(entityIdentifier, blockHash);
+        }
+        
+        /// <summary>
+        /// Returns an AddressableEntity or a legacy Accountfrom the network for a Block from the network
+        /// </summary>
+        /// <param name="entityIdentifier">A PublicKey, an AccoountHashKey, or an AddressableEntityKey</param>
+        /// <param name="blockHeight">A block height for which the information of the entity is queried..</param>
+        public async Task<RpcResponse<GetEntityResult>> GetEntity(IEntityIdentifier entityIdentifier, ulong blockHeight)
+        {
+            _logger.LogInformation($"Call to GetEntity");
+
+            return await CasperClient.GetEntity(entityIdentifier, blockHeight);
+        }
+        
+        /// <summary>
+        /// Returns an AddressableEntity or a legacy Accountfrom the network for a Block from the network
+        /// </summary>
+        /// <param name="entityAddr">The entity address to get information of.</param>
+        /// <param name="blockHash">A block hash for which the information of the entity is queried. Null for most recent information.</param>
+        public async Task<RpcResponse<GetEntityResult>> GetEntity(string entityAddr, string blockHash = null)
+        {
+            _logger.LogInformation($"Call to GetEntity");
+
+            return await CasperClient.GetEntity(entityAddr, blockHash);
+        }
+        
+        /// <summary>
+        /// Returns an AddressableEntity or a legacy Accountfrom the network for a Block from the network
+        /// </summary>
+        /// <param name="entityAddr">The entity address to get information of.</param>
+        /// <param name="blockHeight">A block height for which the information of the entity is queried..</param>
+        public async Task<RpcResponse<GetEntityResult>> GetEntity(string entityAddr, ulong blockHeight)
+        {
+            _logger.LogInformation($"Call to GetEntity");
+
+            return await CasperClient.GetEntity(entityAddr, blockHeight);
+        }
 
         /// <summary>
         /// Request the stored value in a global state key.
@@ -258,6 +306,33 @@ namespace Casper.Network.SDK.Web
             return await CasperClient.GetAccountBalance(publicKey, stateRootHash);
         }
 
+        public async Task<RpcResponse<QueryBalanceDetailsResult>> QueryBalanceDetails(IPurseIdentifier purseIdentifier,
+            string blockHash = null)
+        {
+            _logger.LogInformation(
+                $"Call to QueryBalanceDetails");
+
+            return await CasperClient.QueryBalanceDetails(purseIdentifier, blockHash);
+        }
+
+        public async Task<RpcResponse<QueryBalanceDetailsResult>> QueryBalanceDetails(IPurseIdentifier purseIdentifier,
+            ulong blockHeight)
+        {
+            _logger.LogInformation(
+                $"Call to QueryBalanceDetails");
+
+            return await CasperClient.QueryBalanceDetails(purseIdentifier, blockHeight);
+        }
+
+        public async Task<RpcResponse<QueryBalanceDetailsResult>> QueryBalanceDetailsWithStateRootHash(
+            IPurseIdentifier purseIdentifier, string stateRootHash)
+        {
+            _logger.LogInformation(
+                $"Call to QueryBalanceDetails");
+
+            return await CasperClient.QueryBalanceDetailsWithStateRootHash(purseIdentifier, stateRootHash);
+        }
+        
         /// <summary>
         /// Send a Deploy to the network for its execution.
         /// </summary>
@@ -283,6 +358,13 @@ namespace Casper.Network.SDK.Web
             CancellationToken cancellationToken = default(CancellationToken))
         {
             return await GetDeploy(deployHash, false, cancellationToken);
+        }
+        
+        public async Task<RpcResponse<GetTransactionResult>> GetTransaction(TransactionHash transactionHash,
+            bool finalizedApprovals = false,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await CasperClient.GetTransaction(transactionHash, false, cancellationToken);
         }
         
         /// <summary>

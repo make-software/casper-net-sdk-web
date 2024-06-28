@@ -1,4 +1,5 @@
-﻿using NCTLWebExplorer.Services;
+﻿using Casper.Network.SDK;
+using NCTLWebExplorer.Services;
 using NCTLWebExplorer.Utils;
 using Casper.Network.SDK.SSE;
 using Casper.Network.SDK.Web;
@@ -23,13 +24,21 @@ public partial class MainLayout
 
     [Inject] protected EventStore EventStore { get; set; }
 
+    [Inject] protected ICasperClient CasperRpcService { get; set; }
+
     private SignerStatus _signerStatus = SignerStatus.Unknown;
     private string _activePk = string.Empty;
+
+    private string _buildVersion = "";
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            var response = await CasperRpcService.GetNodeStatus();
+            _buildVersion = response.Parse().BuildVersion;
+            Console.WriteLine("BUILD VERSION: " + response.Result.GetRawText());
+
             void SignerUpdateCallback(bool connected, bool unlocked, string key)
             {
                 _activePk = key;
@@ -77,6 +86,9 @@ public partial class MainLayout
             var state = await SignerInterop.GetState();
 
             SignerUpdateCallback(state.IsConnected, state.IsUnlocked, state.ActivePK);
+            
+            StateHasChanged();
+
         }
     }
 
@@ -84,5 +96,17 @@ public partial class MainLayout
     {
         if (_signerStatus >= SignerStatus.Disconnected)
             await SignerInterop.RequestConnection();
+    }
+    
+    protected async Task OnConnectToCondor()
+    {
+        var response = await CasperRpcService.GetNodeStatus();
+        _buildVersion = response.Parse().BuildVersion;
+        Console.WriteLine("BUILD VERSION: " + response.Result.GetRawText());
+        if (_buildVersion.StartsWith("2."))
+        {
+            EventStore.SwitchToNodeVersion2();
+        }
+        StateHasChanged();
     }
 }

@@ -34,4 +34,14 @@ public partial class BlockExplorer
         _data = EventStore.Blocks.Reverse().Skip(args.Skip ?? 0).Take(_blockGrid.PageSize);
         _isLoading = false;
     }
+
+    private uint TransactionsCount(Block block)
+    {
+        // uint count = 0;
+        // for(int i=0; i<=5; i++)
+        //     if (block.Body.Transactions.Keys.Contains(i.ToString()))
+        //         count += (uint)block.Body.Transactions[i.ToString()].Count;
+        // return count;
+        return (uint)block.Transactions.Count;
+    }
 }

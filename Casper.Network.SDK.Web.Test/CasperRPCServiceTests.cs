@@ -95,7 +95,7 @@ public class CasperRPCServiceTests
         Assert.That(rpcResponse3, Is.Not.Null);
 
         var result3 = rpcResponse3.Parse();
-        Assert.That(result3.Block.Header.Height, Is.EqualTo(blockHeight));
+        Assert.That(result3.Block.Height, Is.EqualTo(blockHeight));
         Assert.That(result3.Block.Hash, Is.EqualTo(blockHash));
     }
         

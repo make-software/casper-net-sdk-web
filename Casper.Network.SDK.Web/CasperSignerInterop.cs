@@ -134,7 +134,7 @@ namespace Casper.Network.SDK.Web
             {
                 var signerResult = await _callSignerInterop<JsonElement>("sign", json, srcPk.ToLower(), tgtPk.ToLower());
 
-                var approval = new DeployApproval()
+                var approval = new Approval()
                 {
                     Signer =
                         PublicKey.FromHexString(signerResult.EnumerateArray().First().GetProperty("signer").ToString()),

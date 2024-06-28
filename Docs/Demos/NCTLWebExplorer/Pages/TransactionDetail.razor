@@ -1,0 +1,49 @@
+@page "/transactions/{TransactionV1Hash}"
+@inherits ExplorerComponent;
+
+@if (_transaction is null)
+{
+    <h3>Loading transaction @TransactionV1Hash</h3>
+}
+else
+{
+    <h3>Transaction details</h3>
+    <div class="row">
+        <div class="col-lg-12">
+            <RadzenCard>
+                <h3 class="h5"><b>Hash:</b><span class="gskey">@TransactionV1Hash</span></h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div>Timestamp</div>
+                        <b>@(Casper.Network.SDK.Utils.DateUtils.ToISOString(_transaction.Header.Timestamp))</b>
+                        <div class="mt-3">Result</div>
+                        <b>@(_executionResult.ErrorMessage == null ? "Success" : "Failed")</b>
+                    </div>
+                    <div class="col-md-4">
+                        <div>Block Hash</div>
+                        <b><a href="/blocks/@(_blockHash)">@(_blockHash.FormatHash())</a></b>
+
+                        <div class="mt-3">Pricing mode</div>
+                        <b>@(_transaction.Header.PricingMode.Type.ToString())</b>
+
+                        <div class="mt-3">Gas tolerance</div>
+                        <b>@(_transaction.Header.PricingMode.GasPriceTolerance)</b>
+                    </div>
+                    <div class="col-md-4">
+                        <div>Limit</div>
+                        <b>@(_executionResult.Limit)</b>
+
+                        <div class="mt-3">Consumed</div>
+                        <b>@(_executionResult.Consumed)</b>
+
+                        <div class="mt-3">Cost</div>
+                        <b>@(_executionResult.Cost)</b>
+                    </div>
+                </div>
+            </RadzenCard>
+            
+            <RpcJsonViewer @ref="JsonViewerInstance" Json="@_transactionJson"></RpcJsonViewer>
+
+        </div>
+    </div>
+}

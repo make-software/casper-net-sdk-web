@@ -1,0 +1,28 @@
+@page "/steps"
+@using Casper.Network.SDK.Types
+@using NCTLWebExplorer.Models
+
+<h3>Steps</h3>
+
+<div class="row">
+    <div class="col-lg-12">
+        <RadzenDataGrid @ref="_stepGrid" AllowFiltering="false"
+                        AllowPaging="true"
+                        PageSize="20"
+                        PagerHorizontalAlign="HorizontalAlign.Center"
+                        AllowSorting="false"
+                        Data="@_data"
+                        TItem="StepSummary"
+                        IsLoading="@_isLoading"
+                        Count="@_count"
+                        LoadData="@LoadData">
+            <Columns>
+                <RadzenDataGridColumn TItem="StepSummary" Property="EraId" Title="Era" Type="typeof(ulong)">
+                    <Template>
+                        <a href="/steps/@context.EraId">@context.EraId</a>
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+</div>

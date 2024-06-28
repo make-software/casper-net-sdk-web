@@ -17,14 +17,14 @@ else
                         <div>Timestamp</div>
                         <b>@(Casper.Network.SDK.Utils.DateUtils.ToISOString(_deploy.Header.Timestamp))</b>
                         <div class="mt-3">Result</div>
-                        <b>@(_executionResults[0].IsSuccess ? "Success" : "Failed")</b>
+                        <b>@(_executionResult.ErrorMessage == null ? "Success" : "Failed")</b>
                     </div>
                     <div class="col-md-8">
                         <div>Block Hash</div>
-                        <b><a href="/blocks/@(_executionResults[0].BlockHash)">@(_executionResults[0].BlockHash)</a></b>
+                        <b><a href="/blocks/@(_blockHash)">@(_blockHash)</a></b>
 
                         <div class="mt-3">Cost</div>
-                        <b>@(_executionResults[0].Cost)</b>
+                        <b>@(_executionResult.Cost)</b>
                     </div>
                 </div>
             </RadzenCard>

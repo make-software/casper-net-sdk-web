@@ -27,6 +27,9 @@ namespace Casper.Network.SDK.Web
             
             if(!int.TryParse(config["Casper.Network.SDK.Web:SSEPort"], out _port))
                 throw new Exception("SSPort not found!");
+            
+            if(!int.TryParse(config["Casper.Network.SDK.Web:SSENodeVersion"], out _nodeVersion))
+                throw new Exception("SSENodeVersion not found!");
         }
         
         /// <summary>

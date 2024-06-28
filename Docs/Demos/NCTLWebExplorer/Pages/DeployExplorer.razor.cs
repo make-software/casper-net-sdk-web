@@ -1,6 +1,7 @@
 ﻿using NCTLWebExplorer.Services;
 using Casper.Network.SDK.SSE;
 using Microsoft.AspNetCore.Components;
+using NCTLWebExplorer.Models;
 using Radzen;
 using Radzen.Blazor;
 
@@ -8,8 +9,8 @@ namespace NCTLWebExplorer.Pages;
 
 public partial class DeployExplorer
 {
-    private RadzenDataGrid<DeployProcessed> _deployGrid;
-    private IEnumerable<DeployProcessed> _data = new List<DeployProcessed>();
+    private RadzenDataGrid<TransactionSummary> _deployGrid;
+    private IEnumerable<TransactionSummary> _data = new List<TransactionSummary>();
 
     private int _count;
     private bool _isLoading;
@@ -20,7 +21,7 @@ public partial class DeployExplorer
     {
         if (firstRender)
         {
-            _data = EventStore.Deploys.TakeLast(_deployGrid.PageSize).Reverse().ToArray();
+            _data = EventStore.Transactions.TakeLast(_deployGrid.PageSize).Reverse().ToArray();
             await _deployGrid.Reload();
             await InvokeAsync(StateHasChanged);
             EventStore.BlockAdded += async (_) => await InvokeAsync(_deployGrid.Reload);
@@ -30,8 +31,8 @@ public partial class DeployExplorer
     {
         _isLoading = true;
         
-        _count = EventStore.Deploys.Count();
-        _data = EventStore.Deploys.Reverse().Skip(args.Skip?? 0).Take(_deployGrid.PageSize);
+        _count = EventStore.Transactions.Count();
+        _data = EventStore.Transactions.Reverse().Skip(args.Skip?? 0).Take(_deployGrid.PageSize);
         _isLoading = false;
     }
 }

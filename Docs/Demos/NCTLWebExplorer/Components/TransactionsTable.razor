@@ -1,0 +1,36 @@
+@using Casper.Network.SDK.Types
+@using NCTLWebExplorer.Models
+<div class="row">
+    <div class="col-lg-12">
+        <RadzenDataGrid @ref="_transactionGrid" AllowFiltering="true"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        FilterMode="FilterMode.Advanced"
+                        AllowPaging="true"
+                        PageSize="20"
+                        PagerHorizontalAlign="HorizontalAlign.Center"
+                        AllowSorting="true"
+                        Data="@_transactions"
+                        TItem="BlockTransaction"
+                        IsLoading="@_isLoading"
+                        Count="@_count"
+                        LoadData="@LoadData">
+            <Columns>
+                <RadzenDataGridColumn TItem="BlockTransaction" Property="Hash" Title="Hash" Type="typeof(string)">
+                    <Template>
+                        <a href="/@(context.Version == TransactionVersion.Deploy ? "deploys" : "transactions")/@context.Hash">@context.Hash.FormatHash()</a>
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="BlockTransaction" Property="Category" Title="Category" Type="typeof(string)">
+                    <Template>
+                        @context.Category.ToString()
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="BlockTransaction" Property="Version" Title="Version" Type="typeof(string)">
+                    <Template>
+                        @context.Version.ToString()
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+</div>

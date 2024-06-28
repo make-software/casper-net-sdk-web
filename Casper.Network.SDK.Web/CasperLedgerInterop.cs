@@ -192,7 +192,7 @@ namespace Casper.Network.SDK.Web
                 if (signature.Length > 130) // remove V byte if included
                     signature = signature[..130];
                 
-                var approval = new DeployApproval()
+                var approval = new Approval()
                 {
                     Signer =  PublicKey.FromHexString(ActivePK),
                     Signature = Signature.FromHexString(signature)

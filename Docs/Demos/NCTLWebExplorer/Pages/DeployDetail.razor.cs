@@ -1,11 +1,16 @@
-﻿using NCTLWebExplorer.Components;
+﻿using System.Runtime.InteropServices;
+using NCTLWebExplorer.Components;
 using Casper.Network.SDK.Types;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NCTLWebExplorer.Pages;
 
 public partial class DeployDetail
 {
+    [Inject]
+    private ILogger<DeployDetail> Logger { get; set; }
+
     [Parameter]
     public string DeployHash { get; set; }
 
@@ -13,7 +18,8 @@ public partial class DeployDetail
 
     private string _deployJson;
     private Deploy _deploy;
-    private List<ExecutionResult> _executionResults;
+    private string _blockHash;
+    private ExecutionResult _executionResult;
     
     protected override async Task OnInitializedAsync()
     {
@@ -23,13 +29,16 @@ public partial class DeployDetail
             _deployJson = response.Result.GetRawText();
             var deployResult = response.Parse();
             _deploy = deployResult.Deploy;
-            _executionResults = deployResult.ExecutionResults;
+            _blockHash = deployResult.ExecutionInfo.BlockHash;
+            _executionResult = deployResult.ExecutionInfo.ExecutionResult;
             StateHasChanged();
         }
     }
     
     protected override void OnAfterRender(bool firstRender)
     {
+        Console.WriteLine("HOLA");
+        Logger.LogTrace("DEPLOY: " + DeployHash);
         if (firstRender || _deployJson != null)
         {
             JsonViewerInstance?.Render(_deployJson);

@@ -1,9 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using NCTLWebExplorer.Components;
+﻿using NCTLWebExplorer.Components;
 using Casper.Network.SDK.JsonRpc;
 using Casper.Network.SDK.Types;
-using Casper.Network.SDK.Web;
-using Microsoft.AspNetCore.Components;
 using Radzen;
 
 namespace NCTLWebExplorer.Pages;

@@ -28,16 +28,15 @@ public partial class AccountBalance
             try
             {
                 var pk = PublicKey.FromHexString(_accountPublicKey);
-                var rpcResponse = await CasperRpcService.GetAccountBalance(pk);
-
+                var rpcResponse = await CasperRpcService.QueryBalanceDetails(pk);
                 var accBalanceJson = rpcResponse.Result.GetRawText();
                 
                 await JsonViewerInstance.Render(accBalanceJson);
 
                 var result = rpcResponse.Parse();
                 
-                Console.WriteLine("BALANCE: " + result.BalanceValue);
-                _balance = result.BalanceValue.ToString();
+                Console.WriteLine("BALANCE1: " + result.TotalBalance);
+                _balance = result.TotalBalance.ToString();
 
                 SuccessMessage = "Account balance retrieved successfully.";
             }
