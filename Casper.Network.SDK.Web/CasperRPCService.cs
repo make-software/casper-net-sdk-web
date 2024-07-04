@@ -37,6 +37,8 @@ namespace Casper.Network.SDK.Web
             if (_nodeAddress == null)
                 throw new Exception("Casper.Network.SDK.Web:NodeAddress configuration key not found!");
             
+            _logger.LogDebug("RPCService node address: " + _nodeAddress);
+            
             _clientFactoryName = config["Casper.Network.SDK.Web:ClientFactory"];
             if (_nodeAddress == null)
                 _clientFactoryName = "caspernode";
@@ -44,6 +46,8 @@ namespace Casper.Network.SDK.Web
             ChainName = config["Casper.Network.SDK.Web:ChainName"];
             if (ChainName == null)
                 throw new Exception("Casper.Network.SDK.Web:ChainName configuration key not found!");
+            
+            _logger.LogDebug("RPCService chain name: " + ChainName);
         }
 
         /// <summary>
@@ -269,43 +273,57 @@ namespace Casper.Network.SDK.Web
         /// </summary>
         /// <param name="purseURef">Purse URef formatted as a string.</param>
         /// <param name="stateRootHash">Hash of the state root.</param>
-        public async Task<RpcResponse<GetBalanceResult>> GetAccountBalance(string purseURef,
+        public async Task<RpcResponse<GetBalanceResult>> GetBalance(string purseURef,
             string stateRootHash = null)
         {
             _logger.LogInformation(
                 $"Call to GetAccountBalance URef: {purseURef}");
 
-            return await CasperClient.GetAccountBalance(purseURef, stateRootHash);
+            return await CasperClient.GetBalance(purseURef, stateRootHash);
         }
 
         /// <summary>
-        /// Request a purse's balance from the network.
+        /// Request the balance information from a PublicKey, AccountHashKey, URef or EntityAddr.
         /// </summary>
-        /// <param name="purseURef">Purse URef key.</param>
-        /// <param name="stateRootHash">Hash of the state root.</param>
-        public async Task<RpcResponse<GetBalanceResult>> GetAccountBalance(URef purseURef,
-            string stateRootHash = null)
+        /// <param name="purseIdentifier">A PublicKey, AccountHashKey, URef or EntityAddr to identify a purse.</param>
+        /// <param name="blockHash">Hash of the block. Null to get latest available.</param>
+        public async Task<RpcResponse<QueryBalanceResult>> QueryBalance(IPurseIdentifier purseIdentifier, 
+            string blockHash = null)
         {
             _logger.LogInformation(
-                $"Call to GetAccountBalance URef: {purseURef}");
-
-            return await CasperClient.GetAccountBalance(purseURef, stateRootHash);
+                $"Call to QueryBalance: {purseIdentifier}");
+            
+            return await CasperClient.QueryBalance(purseIdentifier, blockHash);
         }
-
+        
         /// <summary>
-        /// Request the balance information of an account given its public key.
+        /// Request the balance information from a PublicKey, AccountHashKey, URef or EntityAddr.
         /// </summary>
-        /// <param name="publicKey">The public key of the account to request the balance.</param>
-        /// <param name="stateRootHash">Hash of the state root.</param>
-        public async Task<RpcResponse<GetBalanceResult>> GetAccountBalance(PublicKey publicKey,
-            string stateRootHash = null)
+        /// <param name="purseIdentifier">A PublicKey, AccountHashKey, URef or EntityAddr to identify a purse.</param>
+        /// <param name="blockHeight">Height of the block.</param>
+        public async Task<RpcResponse<QueryBalanceResult>> QueryBalance(IPurseIdentifier purseIdentifier, 
+            ulong blockHeight)
         {
             _logger.LogInformation(
-                $"Call to GetAccountBalance 0x{publicKey.ToAccountHex()[..4]}..{publicKey.ToAccountHex()[28..32]}");
-
-            return await CasperClient.GetAccountBalance(publicKey, stateRootHash);
+                $"Call to QueryBalance: {purseIdentifier}");
+            
+            return await CasperClient.QueryBalance(purseIdentifier, blockHeight);
         }
-
+        
+        /// <summary>
+        /// Request the balance information from a PublicKey, AccountHashKey, URef or EntityAddr.
+        /// </summary>
+        /// <param name="purseIdentifier">A PublicKey, AccountHashKey, URef or EntityAddr to identify a purse.</param>
+        /// <param name="stateRootHash">the state root hash.</param>
+        public async Task<RpcResponse<QueryBalanceResult>> QueryBalanceWithStateRootHash(IPurseIdentifier purseIdentifier,
+            string stateRootHash)
+        {
+            _logger.LogInformation(
+                $"Call to QueryBalanceWithStateRootHash: {purseIdentifier}");
+            
+            return await CasperClient.QueryBalanceWithStateRootHash(purseIdentifier, stateRootHash);
+        }
+        
         public async Task<RpcResponse<QueryBalanceDetailsResult>> QueryBalanceDetails(IPurseIdentifier purseIdentifier,
             string blockHash = null)
         {

@@ -14,7 +14,7 @@ $ git clone -b nctl-webexplorer https://github.com/make-software/casper-net-sdk-
 2. Run the docker build command
 
 ```
-$ docker build -f casper-net-sdk-web/Docs/Demos/Docker-NCTLWebExplorer/NCTLWebExplorer.Dockerfile -t casper-nctlwebexplorer .
+$ docker build -f casper-net-sdk-web/Docs/Demos/Docker-NCTLWebExplorer/NCTLWebExplorer.Dockerfile -t casper-nctl-explorer .
 ```
 
 3. Use `docker-compose` to start a container with `NCTL` and a second container with the explorer demo

@@ -1,4 +1,5 @@
-﻿using NCTLWebExplorer.Services;
+﻿using System.Globalization;
+using NCTLWebExplorer.Services;
 using Casper.Network.SDK.SSE;
 using Microsoft.AspNetCore.Components;
 using NCTLWebExplorer.Models;
@@ -15,24 +16,34 @@ public partial class DeployExplorer
     private int _count;
     private bool _isLoading;
     
-    [Inject] protected EventStore EventStore { get; set; }
+    [Inject] protected EventListener EventListener { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _data = EventStore.Transactions.TakeLast(_deployGrid.PageSize).Reverse().ToArray();
+            var paginatedData = await EventListener.GetTransactions(0, _deployGrid.PageSize);
+            _count = paginatedData.ItemCount;
+            _data = paginatedData.Data;
             await _deployGrid.Reload();
             await InvokeAsync(StateHasChanged);
-            EventStore.BlockAdded += async (_) => await InvokeAsync(_deployGrid.Reload);
+            EventListener.BlockAdded += async (_) => await InvokeAsync(_deployGrid.Reload);
         }
     }
-    private void LoadData(LoadDataArgs args)
+    private async Task LoadData(LoadDataArgs args)
     {
         _isLoading = true;
         
-        _count = EventStore.Transactions.Count();
-        _data = EventStore.Transactions.Reverse().Skip(args.Skip?? 0).Take(_deployGrid.PageSize);
+        var paginatedData = await EventListener.GetTransactions(args.Skip ?? 0, _deployGrid.PageSize);
+        _count = paginatedData.ItemCount;
+        _data = paginatedData.Data;
         _isLoading = false;
+    }
+    
+    private string TimestampToLocalTime(string timestamp)
+    {
+        if(DateTime.TryParse(timestamp, out var t))
+            return t.ToLocalTime().ToString("", CultureInfo.CurrentCulture);
+        return timestamp;
     }
 }

@@ -1,5 +1,6 @@
 ﻿@page "/blocks"
 @using Casper.Network.SDK.Types
+@using NCTLWebExplorer.Models
 
 <h3>Blocks</h3>
 
@@ -11,39 +12,46 @@
                         PagerHorizontalAlign="HorizontalAlign.Center"
                         AllowSorting="false"
                         Data="@_data"
-                        TItem="Block"
+                        TItem="BlockSummary"
                         IsLoading="@_isLoading"
                         Count="@_count"
                         LoadData="@LoadData">
             <Columns>
-                <RadzenDataGridColumn TItem="Block" Property="BlockHeight" Title="Block Height" Type="typeof(int)">
+                <RadzenDataGridColumn TItem="BlockSummary" Property="BlockHeight" Title="Block Height" Type="typeof(int)">
                     <Template>
                         <a href="/blocks/@context.Hash">@context.Height</a>
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Block" Property="Era" Title="Era" Type="typeof(int)">
+                <RadzenDataGridColumn TItem="BlockSummary" Property="Era" Title="Era" Type="typeof(int)">
                     <Template>
                         @context.EraId
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Block" Property="Deploys" Title="Deploys" Type="typeof(int)">
+                <RadzenDataGridColumn TItem="BlockSummary" Property="Deploys" Title="Deploys" Type="typeof(int)">
                     <Template>
-                        @(TransactionsCount(context))
+                        @context.TransactionCount
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Block" Property="Hash" Title="Block hash" Type="typeof(string)">
+                <RadzenDataGridColumn TItem="BlockSummary" Property="Hash" Title="Block hash" Type="typeof(string)">
                     <Template>
                         <a href="/blocks/@context.Hash">@context.Hash.FormatHash()</a>
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Block" Property="Proposer" Title="Block hash" Type="typeof(string)">
+                <RadzenDataGridColumn TItem="BlockSummary" Property="Proposer" Title="Proposer" Type="typeof(string)">
                     <Template>
-                        @(context.Proposer.IsSystem ? "00" : context.Proposer.PublicKey.ToString().FormatHash())
+                        @if (context.Proposer == "00")
+                        {
+                            @("00")
+                        }
+                        else
+                        {
+                            <a href="/account-info/@(context.Proposer)">@context.Proposer.FormatHash()</a>
+                        }
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Block" Property="Timestamp" Title="Timestamp" Type="typeof(string)">
                     <Template>
-                        @context.Timestamp
+                        @TimestampToLocalTime(context.Timestamp)
                     </Template>
                 </RadzenDataGridColumn>
             </Columns>

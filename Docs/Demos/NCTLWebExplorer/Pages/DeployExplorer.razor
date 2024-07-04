@@ -46,7 +46,12 @@
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="TransactionSummary" Property="Timestamp" Title="Timestamp" Type="typeof(string)">
                     <Template>
-                        @context.Timestamp
+                        @TimestampToLocalTime(context.Timestamp)
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="TransactionSummary" Property="MessageCount" Title="Messages" Type="typeof(string)">
+                    <Template>
+                        @context.MessageCount
                     </Template>
                 </RadzenDataGridColumn>
             </Columns>

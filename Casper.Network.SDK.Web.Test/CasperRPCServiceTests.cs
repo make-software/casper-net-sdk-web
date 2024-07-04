@@ -122,11 +122,11 @@ public class CasperRPCServiceTests
             var accountInfo = response.Parse();
             Assert.That(accountInfo.Account.AccountHash.ToString(), Is.Not.Empty);
 
-            var response2 = await _casperClient.GetAccountBalance(account);
+            var response2 = await _casperClient.QueryBalance(account);
             var accountBalance = response2.Parse();
             Assert.That(accountBalance.BalanceValue > 0, Is.True);
 
-            var response3 = await _casperClient.GetAccountBalance(accountInfo.Account.MainPurse);
+            var response3 = await _casperClient.QueryBalance(accountInfo.Account.MainPurse);
             var accountBalance2 = response3.Parse();
             Assert.That(accountBalance2.BalanceValue, Is.EqualTo(accountBalance.BalanceValue));
         }

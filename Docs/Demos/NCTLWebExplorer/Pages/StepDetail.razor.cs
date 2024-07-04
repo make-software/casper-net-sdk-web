@@ -11,7 +11,7 @@ public partial class StepDetail
     [Parameter] public string EraId { get; set; }
     
     [Inject] protected NavigationManager NavigationManager { get; set; }
-    [Inject] protected EventStore EventStore { get; set; }
+    [Inject] protected EventListener EventListener { get; set; }
 
     private RpcJsonViewer JsonViewerInstance { get; set; }
 
@@ -20,7 +20,7 @@ public partial class StepDetail
     protected override async Task OnInitializedAsync()
     {
         var eraId = ulong.Parse(EraId);
-        var stepSummary = EventStore.Steps.FirstOrDefault(step => step.EraId == eraId);
+        var stepSummary = await EventListener.GetStepByEraId(eraId);
         if (stepSummary != null)
         {
             _stepJson = stepSummary.Json;

@@ -2,6 +2,7 @@
 using System.Net.Http;
 using Casper.Network.SDK.SSE;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Casper.Network.SDK.Web
 {
@@ -11,6 +12,7 @@ namespace Casper.Network.SDK.Web
     public class CasperSSEService : ServerEventsClient
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly ILogger<CasperSSEService> _logger;
 
         /// <summary>
         /// 
@@ -18,9 +20,10 @@ namespace Casper.Network.SDK.Web
         /// <param name="httpClientFactory"></param>
         /// <param name="config">A configuration object to load connection details</param>
         public CasperSSEService(IHttpClientFactory httpClientFactory,
-            IConfiguration config)
+            IConfiguration config, ILogger<CasperSSEService> logger)
         {
             _clientFactory = httpClientFactory;
+            _logger = logger;
             
             if ((_host = config["Casper.Network.SDK.Web:SSEHost"]) == null)
                 throw new Exception("SSEHost not found!");
@@ -30,6 +33,8 @@ namespace Casper.Network.SDK.Web
             
             if(!int.TryParse(config["Casper.Network.SDK.Web:SSENodeVersion"], out _nodeVersion))
                 throw new Exception("SSENodeVersion not found!");
+            
+            _logger.LogDebug("SSEService will connect to: http://" + _host + ":" + _port);
         }
         
         /// <summary>

@@ -22,7 +22,7 @@ public partial class MainLayout
 
     [Inject] protected ILogger<MainLayout> Logger { get; set; }
 
-    [Inject] protected EventStore EventStore { get; set; }
+    [Inject] protected EventListener EventListener { get; set; }
 
     [Inject] protected ICasperClient CasperRpcService { get; set; }
 
@@ -35,9 +35,7 @@ public partial class MainLayout
     {
         if (firstRender)
         {
-            var response = await CasperRpcService.GetNodeStatus();
-            _buildVersion = response.Parse().BuildVersion;
-            Console.WriteLine("BUILD VERSION: " + response.Result.GetRawText());
+            await OnConnectToCondor();
 
             void SignerUpdateCallback(bool connected, bool unlocked, string key)
             {
@@ -105,7 +103,7 @@ public partial class MainLayout
         Console.WriteLine("BUILD VERSION: " + response.Result.GetRawText());
         if (_buildVersion.StartsWith("2."))
         {
-            EventStore.SwitchToNodeVersion2();
+            EventListener.SwitchToNodeVersion2();
         }
         StateHasChanged();
     }

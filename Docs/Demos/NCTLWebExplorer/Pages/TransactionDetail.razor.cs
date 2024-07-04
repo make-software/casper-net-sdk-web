@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Runtime.InteropServices;
 using NCTLWebExplorer.Components;
 using Casper.Network.SDK.Types;
@@ -52,5 +53,19 @@ public partial class TransactionDetail
             JsonViewerInstance?.Render(_transactionJson);
             _transactionJson = null;
         }
+    }
+    
+    private string TimestampToLocalTime(ulong timestamp)
+    {
+        try
+        {
+            var isoDateTime = Casper.Network.SDK.Utils.DateUtils.ToISOString(_transaction.Header.Timestamp);
+            if(DateTime.TryParse(isoDateTime, out var t))
+                return t.ToLocalTime().ToString("", CultureInfo.CurrentCulture);
+        }
+        catch 
+        {
+        }
+        return timestamp.ToString();
     }
 }

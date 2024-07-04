@@ -15,24 +15,27 @@ public partial class StepExplorer : ComponentBase
     private int _count;
     private bool _isLoading;
     
-    [Inject] protected EventStore EventStore { get; set; }
+    [Inject] protected EventListener EventListener { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _data = EventStore.Steps.TakeLast(_stepGrid.PageSize).Reverse().ToArray();
+            var paginatedData = await EventListener.GetSteps(0, _stepGrid.PageSize);
+            _count = paginatedData.ItemCount;
+            _data = paginatedData.Data;
             await _stepGrid.Reload();
             await InvokeAsync(StateHasChanged);
-            EventStore.StepAdded += async (_) => await InvokeAsync(_stepGrid.Reload);
+            EventListener.StepAdded += async (_) => await InvokeAsync(_stepGrid.Reload);
         }
     }
 
-    private void LoadData(LoadDataArgs args)
+    private async Task LoadData(LoadDataArgs args)
     {
         _isLoading = true;
-        _count = EventStore.Steps.Count();
-        _data = EventStore.Steps.Reverse().Skip(args.Skip ?? 0).Take(_stepGrid.PageSize);
+        var paginatedData = await EventListener.GetSteps(args.Skip ?? 0, _stepGrid.PageSize);
+        _count = paginatedData.ItemCount;
+        _data = paginatedData.Data;
         _isLoading = false;
     }
 }

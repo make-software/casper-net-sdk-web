@@ -1,6 +1,8 @@
-﻿using NCTLWebExplorer.Services;
+﻿using System.Globalization;
+using NCTLWebExplorer.Services;
 using Casper.Network.SDK.Types;
 using Microsoft.AspNetCore.Components;
+using NCTLWebExplorer.Models;
 using Radzen;
 using Radzen.Blazor;
 
@@ -8,40 +10,40 @@ namespace NCTLWebExplorer.Pages;
 
 public partial class BlockExplorer
 {
-    private RadzenDataGrid<Block> _blockGrid;
-    private IEnumerable<Block> _data = new List<Block>();
+    private RadzenDataGrid<BlockSummary> _blockGrid;
+    private IEnumerable<BlockSummary> _data = new List<BlockSummary>();
 
     private int _count;
     private bool _isLoading;
     
-    [Inject] protected EventStore EventStore { get; set; }
+    [Inject] protected EventListener EventListener { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _data = EventStore.Blocks.TakeLast(_blockGrid.PageSize).Reverse().ToArray();
+            var paginatedData = await EventListener.GetBlocks(0, _blockGrid.PageSize);
+            _count = paginatedData.ItemCount;
+            _data = paginatedData.Data;
             await _blockGrid.Reload();
             await InvokeAsync(StateHasChanged);
-            EventStore.BlockAdded += async (_) => await InvokeAsync(_blockGrid.Reload);
+            EventListener.BlockAdded += async (_) => await InvokeAsync(_blockGrid.Reload);
         }
     }
 
-    private void LoadData(LoadDataArgs args)
+    private async Task LoadData(LoadDataArgs args)
     {
         _isLoading = true;
-        _count = EventStore.Blocks.Count();
-        _data = EventStore.Blocks.Reverse().Skip(args.Skip ?? 0).Take(_blockGrid.PageSize);
+        var paginatedData = await EventListener.GetBlocks(args.Skip ?? 0, _blockGrid.PageSize);
+        _count = paginatedData.ItemCount;
+        _data = paginatedData.Data;
         _isLoading = false;
     }
 
-    private uint TransactionsCount(Block block)
+    private string TimestampToLocalTime(string timestamp)
     {
-        // uint count = 0;
-        // for(int i=0; i<=5; i++)
-        //     if (block.Body.Transactions.Keys.Contains(i.ToString()))
-        //         count += (uint)block.Body.Transactions[i.ToString()].Count;
-        // return count;
-        return (uint)block.Transactions.Count;
+        if(DateTime.TryParse(timestamp, out var t))
+            return t.ToLocalTime().ToString("", CultureInfo.CurrentCulture);
+        return timestamp;
     }
 }

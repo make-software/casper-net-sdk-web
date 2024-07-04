@@ -15,7 +15,7 @@ else
                 <div class="row">
                     <div class="col-md-4">
                         <div>Timestamp</div>
-                        <b>@(Casper.Network.SDK.Utils.DateUtils.ToISOString(_transaction.Header.Timestamp))</b>
+                        <b>@TimestampToLocalTime(_transaction.Header.Timestamp)</b>
                         <div class="mt-3">Result</div>
                         <b>@(_executionResult.ErrorMessage == null ? "Success" : "Failed")</b>
                     </div>
@@ -30,10 +30,10 @@ else
                         <b>@(_transaction.Header.PricingMode.GasPriceTolerance)</b>
                     </div>
                     <div class="col-md-4">
-                        <div>Limit</div>
+                        <div>Gas limit</div>
                         <b>@(_executionResult.Limit)</b>
 
-                        <div class="mt-3">Consumed</div>
+                        <div class="mt-3">Gas consumed</div>
                         <b>@(_executionResult.Consumed)</b>
 
                         <div class="mt-3">Cost</div>

@@ -12,6 +12,7 @@ public enum TransactionCategory
 
 public class TransactionSummary
 {
+    public ulong EventId { get; init; }
     public string Category { get; set; }
     public string Version { get; set; }
     public string Hash { get; set; }
@@ -19,4 +20,5 @@ public class TransactionSummary
     public string Result { get; set; }
     public string Initiator { get; set; }
     public string Timestamp { get; set; }
+    public int MessageCount { get; set; }
 }

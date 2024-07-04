@@ -4,14 +4,13 @@ using NCTLWebExplorer.Models;
 
 namespace NCTLWebExplorer.Services;
 
-public class EventStore
+public class EventListener
 {
     private readonly ISSEClient _sseService;
-    private readonly ILogger<EventStore> _logger;
+    private readonly ILogger<EventListener> _logger;
     
-    private readonly List<StepSummary> _steps = new();
-    private readonly List<Block> _blocks = new();
-    private readonly List<TransactionSummary> _transactions = new();
+    private readonly IEventStore _store;
+    public IEventStore Store => _store;
     
     private readonly string _cbStepsName = Guid.NewGuid().ToString();
     private readonly string _cbBlocksName = Guid.NewGuid().ToString();
@@ -31,24 +30,55 @@ public class EventStore
     public delegate void NewTransactionHandler(TransactionProcessed newTransaction);
     
     public event NewTransactionHandler TransactionAdded;
-    
-    public IEnumerable<StepSummary> Steps => _steps;
-    
-    public IEnumerable<Block> Blocks => _blocks;
 
-    public IEnumerable<TransactionSummary> Transactions => _transactions;
+    public async Task<PaginatedSummary<StepSummary>> GetSteps(int skip, int pageSize)
+    {
+        return await _store.GetSteps(skip, pageSize);
+    }
+
+    public async Task<PaginatedSummary<BlockSummary>> GetBlocks(int skip, int pageSize)
+    {
+        return await _store.GetBlocks(skip, pageSize);
+    }
+
+    public async Task<PaginatedSummary<TransactionSummary>> GetTransactions(int skip, int pageSize)
+    {
+        return await _store.GetTransactions(skip, pageSize);
+    }
+
+    public async Task<StepSummary> GetStepByEraId(ulong eraId)
+    {
+        return await _store.GetStepByEraId(eraId);
+    }
     
-    public EventStore(ISSEClient sseService, ILogger<EventStore> logger)
+    public EventListener(ISSEClient sseService, ILogger<EventListener> logger, IConfiguration config)
     {
         _sseService = sseService;
         _logger = logger;
+
+        var connectionString = config["MySqlConnection"];
+        ulong startFrom = 0;
+        if (!string.IsNullOrWhiteSpace(connectionString))
+        {
+            var mysqlStore = new MysqlEventStore(connectionString, _logger);
+            startFrom = mysqlStore.GetHighestEventId();
+            startFrom = startFrom == 0 ? 0 : startFrom + 1;
+            _store = mysqlStore;
+            
+            _logger.LogInformation("Using MysqlEventStore");
+        }
+        else
+        {
+            _store = new MemoryEventStore();
+            _logger.LogInformation("Using MemoryEventStore");
+        }
         
         try
         {
-            _sseService.AddEventCallback(EventType.Step, _cbStepsName,  NewEventCallback);
-            _sseService.AddEventCallback(EventType.BlockAdded, _cbBlocksName,  NewEventCallback);
-            _sseService.AddEventCallback(EventType.DeployProcessed, _cbDeploysName,  NewEventCallback);
-            _sseService.AddEventCallback(EventType.TransactionProcessed, _cbTransactionsName,  NewEventCallback);
+            _sseService.AddEventCallback(EventType.Step, _cbStepsName,  NewEventCallback, (int)startFrom);
+            _sseService.AddEventCallback(EventType.BlockAdded, _cbBlocksName,  NewEventCallback, (int)startFrom);
+            _sseService.AddEventCallback(EventType.DeployProcessed, _cbDeploysName,  NewEventCallback, (int)startFrom);
+            _sseService.AddEventCallback(EventType.TransactionProcessed, _cbTransactionsName,  NewEventCallback, (int)startFrom);
             Console.WriteLine($"StartListening");
 
             _sseService.StartListening();
@@ -66,8 +96,9 @@ public class EventStore
         if (evt.EventType == EventType.Step)
         {
             var step = evt.Parse<Step>();
-            _steps.Add(new StepSummary()
+            _store.AddStep(new StepSummary()
             {
+                EventId = (ulong)evt.Id,
                 EraId = step.EraId,
                 Json = evt.Result.GetRawText(),
             });
@@ -76,14 +107,26 @@ public class EventStore
         else if (evt.EventType == EventType.BlockAdded)
         {
             var blockAdded = evt.Parse<BlockAdded>();
-            _blocks.Add(blockAdded.Block);
+            _store.AddBlock(new BlockSummary()
+            {
+                EventId = (ulong)evt.Id,
+                Hash = blockAdded.BlockHash,
+                EraId = blockAdded.Block.EraId,
+                Height = blockAdded.Block.Height,
+                ProtocolVersion = blockAdded.Block.ProtocolVersion,
+                Timestamp = blockAdded.Block.Timestamp,
+                IsEraEnd = blockAdded.Block.EraEnd != null,
+                Proposer = blockAdded.Block.Proposer.ToString(),
+                TransactionCount = (uint)blockAdded.Block.Transactions.Count,
+            });
             OnBlockAdded(blockAdded.Block);
         }
         else if (evt.EventType == EventType.DeployProcessed)
         {
             var deployProcessed = evt.Parse<DeployProcessed>();
-            _transactions.Add(new TransactionSummary()
+            _store.AddTransaction(new TransactionSummary()
             {
+                EventId = (ulong)evt.Id,
                 Hash = deployProcessed.DeployHash,
                 BlockHash = deployProcessed.BlockHash,
                 Initiator = deployProcessed.Account.ToAccountHex(),
@@ -97,9 +140,9 @@ public class EventStore
         else if (evt.EventType == EventType.TransactionProcessed)
         {
             var transactionProcessed = evt.Parse<TransactionProcessed>();
-            _transactions.Add(new TransactionSummary()
+            _store.AddTransaction(new TransactionSummary()
             {
-                
+                EventId = (ulong)evt.Id,
                 Hash = transactionProcessed.TransactionHash.Deploy != null ? 
                     transactionProcessed.TransactionHash.Deploy : transactionProcessed.TransactionHash.Version1,
                 BlockHash = transactionProcessed.BlockHash,
@@ -110,6 +153,7 @@ public class EventStore
                 Category = "n/a",
                 Version = transactionProcessed.TransactionHash.Deploy != null ? "Deploy" : "Version1",
                 Result = transactionProcessed.ExecutionResult.ErrorMessage == null ? "Success" : "Failure",
+                MessageCount = transactionProcessed.Messages.Count,
             });
             _logger.LogDebug("Transaction added to event store.");
             OnTransactionAdded(transactionProcessed);
