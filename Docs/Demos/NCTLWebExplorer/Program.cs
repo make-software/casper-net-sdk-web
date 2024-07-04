@@ -17,7 +17,7 @@ builder.Services.AddCasperSSEService(builder.Configuration);
 builder.Services.AddCasperSignerInterop();
 builder.Services.AddCasperLedgerInterop();
 
-builder.Services.AddSingleton<EventStore>();
+builder.Services.AddSingleton<EventListener>();
 
 var app = builder.Build();
 
