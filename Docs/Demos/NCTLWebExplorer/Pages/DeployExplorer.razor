@@ -34,9 +34,9 @@
                         <a href="/blocks/@context.BlockHash">@context.BlockHash.FormatHash()</a>
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="TransactionSummary" Property="PublicKey" Title="Public key" Type="typeof(string)">
+                <RadzenDataGridColumn TItem="TransactionSummary" Property="PublicKey" Title="Initiator" Type="typeof(string)">
                     <Template>
-                        @(context.Initiator.FormatHash())
+                        <a href="/get-entity/@(context.Initiator)">@context.Initiator.FormatHash()</a>
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="TransactionSummary" Property="Result" Title="Result" Type="typeof(string)">

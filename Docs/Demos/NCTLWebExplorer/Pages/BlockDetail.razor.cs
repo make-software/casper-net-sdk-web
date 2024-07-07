@@ -1,4 +1,5 @@
-﻿using NCTLWebExplorer.Components;
+﻿using Casper.Network.SDK.JsonRpc;
+using NCTLWebExplorer.Components;
 using Casper.Network.SDK.Types;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
@@ -23,10 +24,21 @@ public partial class BlockDetail
         if (CasperRpcService != null && 
             !string.IsNullOrWhiteSpace(BlockHash))
         {
-            var response = await CasperRpcService.GetBlock(BlockHash);
-            _blockJson = response.Result.GetRawText();
-            var blockResult = response.Parse();
-            _block = blockResult.Block;
+            try
+            {
+                var response = await CasperRpcService.GetBlock(BlockHash);
+                _blockJson = response.Result.GetRawText();
+                var blockResult = response.Parse();
+                _block = blockResult.Block;
+            }
+            catch (RpcClientException e)
+            {
+                ErrorMessage = e.Message + ".\n" + e.Data;
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message;
+            }
         }
         
         NavigationManager.LocationChanged += LocationChanged;

@@ -23,12 +23,12 @@
 
         <RadzenCard Class="w-100 mb-4">
             <div class="row mb-4">
-                <PublicKeyTextBox Text="Enter the origin Public Key:" SignerRef="@SignerInterop"
+                <PublicKeyTextBox Text="Enter the origin Public Key:"
                                   LinkedToSigner="true" 
                                   @bind-Value="@_originPublicKey" Class="w-100"/>
             </div>
             <div class="row mb-4">
-                <PublicKeyTextBox Text="Enter the recipient Public Key:" SignerRef="@SignerInterop"
+                <PublicKeyTextBox Text="Enter the recipient Public Key:" 
                                   @bind-Value="@_targetPublicKey" Class="w-100"/>
             </div>
             <div class="row mb-4">

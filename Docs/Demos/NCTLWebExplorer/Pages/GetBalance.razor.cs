@@ -1,6 +1,7 @@
 using NCTLWebExplorer.Components;
 using Casper.Network.SDK.JsonRpc;
 using Casper.Network.SDK.Types;
+using NCTLWebExplorer.Utils;
 using Radzen;
 
 namespace NCTLWebExplorer.Pages;
@@ -19,59 +20,91 @@ public partial class GetBalance
     private string _accountPublicKey;
 
     protected RpcJsonViewer JsonViewerInstance { get; set; }
-    
+
     async Task GetAccountBalanceBtnClicked()
     {
         SuccessMessage = null;
         ErrorMessage = null;
 
         if (string.IsNullOrWhiteSpace(_accountPublicKey))
-        {
-            ErrorMessage = "Enter an account public key first.";
             return;
-        }
-        
+
         if (CasperRpcService != null)
         {
-            try
+            if (_queryMethod == (int)AccountBalanceMethod.GetBalance)
             {
-                if (_queryMethod == (int)AccountBalanceMethod.GetBalance)
+                GetKeyFromInput.TryParse(_accountPublicKey, out var key);
+
+                if (key == null ||
+                    (key is not URef))
+                {
+                    ErrorMessage = "Wrong URef key value or format.";
+                    return;
+                }
+
+                try
                 {
                     var rpcResponse = await CasperRpcService.GetBalance(_accountPublicKey);
-                    var accBalanceJson = rpcResponse.Result.GetRawText();
-                
-                    await JsonViewerInstance.Render(accBalanceJson);
+                    var json = rpcResponse.Result.GetRawText();
+
+                    await JsonViewerInstance.Render(json);
+
+                    SuccessMessage = "Balance retrieved successfully.";
                 }
-                else if (_queryMethod == (int)AccountBalanceMethod.QueryBalance)
+                catch (Exception e)
                 {
-                    var pk = PublicKey.FromHexString(_accountPublicKey);
-                    var rpcResponse = await CasperRpcService.QueryBalance(pk);
-                    var accBalanceJson = rpcResponse.Result.GetRawText();
-                
-                    await JsonViewerInstance.Render(accBalanceJson);
+                    Console.WriteLine(e);
+                    throw;
                 }
-                else if (_queryMethod == (int)AccountBalanceMethod.QueryBalanceDetails)
-                {
-                    var pk = PublicKey.FromHexString(_accountPublicKey);
-                    var rpcResponse = await CasperRpcService.QueryBalanceDetails(pk);
-                    var accBalanceJson = rpcResponse.Result.GetRawText();
-                
-                    await JsonViewerInstance.Render(accBalanceJson);
-                }
-                SuccessMessage = "Account balance retrieved successfully.";
             }
-            catch (RpcClientException e)
+            else if (_queryMethod == (int)AccountBalanceMethod.QueryBalance ||
+                     _queryMethod == (int)AccountBalanceMethod.QueryBalanceDetails)
             {
-                ErrorMessage = e.Message;
-            
-                NotificationService.Notify(new NotificationMessage
-                    {Severity = NotificationSeverity.Error, Summary = "Error retrieving the account balance.", Duration = 4000});
+                GetKeyFromInput.TryParse(_accountPublicKey, out var key);
+
+                if (key == null ||
+                    (key is not IPurseIdentifier))
+                {
+                    ErrorMessage = "Wrong purse identifier value or format.";
+                    return;
+                }
+
+                try
+                {
+                    if (_queryMethod == (int)AccountBalanceMethod.QueryBalance)
+                    {
+                        var rpcResponse = await CasperRpcService.QueryBalance(key as IPurseIdentifier);
+                        await JsonViewerInstance.Render(rpcResponse.Result.GetRawText());
+                    }
+                    else
+                    {
+                        var rpcResponse = await CasperRpcService.QueryBalanceDetails(key as IPurseIdentifier);
+                        await JsonViewerInstance.Render(rpcResponse.Result.GetRawText());
+                    }
+
+                    SuccessMessage = "Balance retrieved successfully.";
+                }
+                catch (RpcClientException e)
+                {
+                    ErrorMessage = e.Message + ".\n" + e.Data;
+                }
+                catch (Exception e)
+                {
+                    ErrorMessage = "Wrong purse identifier value or format.";
+                }
             }
         }
     }
-    
+
+    private const string QUERY_BALANCE_LABEL = "Enter a public key, an account hash, an entity address or an URef key";
+    private const string GET_BALANCE_LABEL = "Enter an URef key";
+    private string InputLabel = QUERY_BALANCE_LABEL;
+
     private void OnQueryMethodChange(int value)
     {
-        //ignored
+        if (_queryMethod == (int)AccountBalanceMethod.GetBalance)
+            InputLabel = GET_BALANCE_LABEL;
+        else
+            InputLabel = QUERY_BALANCE_LABEL;
     }
 }

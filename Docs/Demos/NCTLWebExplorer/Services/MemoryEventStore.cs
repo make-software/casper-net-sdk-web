@@ -11,6 +11,12 @@ public class MemoryEventStore : IEventStore
 
     private readonly List<TransactionSummary> _transactions = new();
 
+    private readonly ILogger<EventListener> _logger;
+
+    public MemoryEventStore(ILogger<EventListener> logger)
+    {
+        _logger = logger;
+    }
     public void AddStep(StepSummary step)
     {
         _steps.Add(step);
@@ -43,16 +49,31 @@ public class MemoryEventStore : IEventStore
 
     public Task<PaginatedSummary<BlockSummary>> GetBlocks(int skip, int pageSize)
     {
-        var data = (_blocks as IEnumerable<BlockSummary>)
-            .Reverse().Skip((int)skip).Take((int)pageSize).ToList();
-        var result = new PaginatedSummary<BlockSummary>()
+        try
         {
-            Data = data,
-            ItemCount = _blocks.Count,
-            PageCount = (int)Math.Ceiling((decimal)_blocks.Count / (decimal)pageSize),
-        };
+            var data = (_blocks as IEnumerable<BlockSummary>)
+                .Reverse().Skip((int)skip).Take((int)pageSize).ToList();
+            var result = new PaginatedSummary<BlockSummary>()
+            {
+                Data = data,
+                ItemCount = _blocks.Count,
+                PageCount = (int)Math.Ceiling((decimal)_blocks.Count / (decimal)pageSize),
+            };
 
-        return Task.FromResult(result);
+            return Task.FromResult(result);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Cannot get blocks. Error: " + e.Message);
+            var result = new PaginatedSummary<BlockSummary>()
+            {
+                Data = new List<BlockSummary>(),
+                ItemCount = 0,
+                PageCount = 0,
+            };
+            return Task.FromResult(result);
+        }
+        
     }
 
     public Task<PaginatedSummary<TransactionSummary>> GetTransactions(int skip, int pageSize)

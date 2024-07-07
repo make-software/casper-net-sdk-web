@@ -14,9 +14,6 @@ builder.Services.AddScoped<NotificationService>();
 // Add Casper Network SDK services
 builder.Services.AddCasperRPCService(builder.Configuration);
 builder.Services.AddCasperSSEService(builder.Configuration);
-builder.Services.AddCasperSignerInterop();
-builder.Services.AddCasperLedgerInterop();
-
 builder.Services.AddSingleton<EventListener>();
 
 var app = builder.Build();

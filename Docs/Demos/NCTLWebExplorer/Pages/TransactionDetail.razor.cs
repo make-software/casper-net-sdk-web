@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
+using Casper.Network.SDK.JsonRpc;
 using NCTLWebExplorer.Components;
 using Casper.Network.SDK.Types;
 using Microsoft.AspNetCore.Components;
@@ -37,12 +38,14 @@ public partial class TransactionDetail
                 _executionResult = transactionResult.ExecutionInfo.ExecutionResult;
                 StateHasChanged();
             }
+            catch (RpcClientException e)
+            {
+                ErrorMessage = e.Message + ".\n" + e.Data;
+            }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                ErrorMessage = e.Message;
             }
-            
         }
     }
     

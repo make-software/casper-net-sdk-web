@@ -1,4 +1,4 @@
-using Casper.Network.SDK.Types;
+using Casper.Network.SDK.JsonRpc;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using NCTLWebExplorer.Components;
@@ -19,12 +19,25 @@ public partial class StepDetail
     
     protected override async Task OnInitializedAsync()
     {
-        var eraId = ulong.Parse(EraId);
-        var stepSummary = await EventListener.GetStepByEraId(eraId);
-        if (stepSummary != null)
+        try
         {
-            _stepJson = stepSummary.Json;
+            var eraId = ulong.Parse(EraId);
+            var stepSummary = await EventListener.GetStepByEraId(eraId);
+            if (stepSummary != null)
+            {
+                _stepJson = stepSummary.Json;
+            }
+            else throw new Exception("Step for era not found in the event store.");
         }
+        catch (RpcClientException e)
+        {
+            ErrorMessage = e.Message + ".\n" + e.Data;
+        }
+        catch (Exception e)
+        {
+            ErrorMessage = e.Message;
+        }
+        
         
         NavigationManager.LocationChanged += LocationChanged;
         await base.OnInitializedAsync();

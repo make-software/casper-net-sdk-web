@@ -15,8 +15,14 @@
     crossorigin="anonymous"></script>
 
 <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
-<script src="_content/Casper.Network.SDK.Web/casperSignerInitialState.js"></script>
 <script src="jsonviewer/JsonViewer.js" type="text/javascript"></script>
 
-<!-- Add Casper Ledger support script -->
-<script src="_content/Casper.Network.SDK.Web/casperLedgerInterop.js"></script>
+<script type="text/javascript">
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            console.log('Text copied to clipboard');
+        }).catch(function(error) {
+            console.error('Could not copy text: ', error);
+        });
+    }
+</script>

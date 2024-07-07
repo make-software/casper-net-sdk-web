@@ -23,17 +23,17 @@
 
         <RadzenCard Class="w-100 mb-4">
             <div class="row mb-4">
-                <h5>Enter a public key, an account hash or an entity address (with prefix):</h5>
+                <h5>@InputLabel:</h5>
                 <div>
-                    <RadzenTextBox @bind-Value="EntityAddress" Placeholder="entity..." Class="w-100"/>
+                    <RadzenTextBox @bind-Value="EntityAddress" Placeholder="entity identifier..." Class="w-100"/>
                 </div>
             </div>
             <div class="row mb-4">
                 <RadzenRadioButtonList @bind-Value=@_queryMethod TValue="int"
                                        Orientation="Orientation.Horizontal" Change="@(OnQueryMethodChange)">
                     <Items>
-                        <RadzenRadioButtonListItem Text="Get Entity" Value="0"/>
-                        <RadzenRadioButtonListItem Text="Get Account Info" Value="1"/>
+                        <RadzenRadioButtonListItem Text="state_get_entity" Value="0"/>
+                        <RadzenRadioButtonListItem Text="state_get_account_info " Value="1"/>
                     </Items>
                 </RadzenRadioButtonList>
             </div>
@@ -44,7 +44,7 @@
             </div>
         </RadzenCard>
     </div>
-    <div class="col-lg-12 mt-3">
+    <div class="col-lg-12 mt-3 mb-4">
         <RpcJsonViewer @ref="JsonViewerInstance"></RpcJsonViewer>
     </div>
 </div>

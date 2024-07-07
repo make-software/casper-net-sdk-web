@@ -69,7 +69,7 @@ public class EventListener
         }
         else
         {
-            _store = new MemoryEventStore();
+            _store = new MemoryEventStore(_logger);
             _logger.LogInformation("Using MemoryEventStore");
         }
         
@@ -116,7 +116,7 @@ public class EventListener
                 ProtocolVersion = blockAdded.Block.ProtocolVersion,
                 Timestamp = blockAdded.Block.Timestamp,
                 IsEraEnd = blockAdded.Block.EraEnd != null,
-                Proposer = blockAdded.Block.Proposer.ToString(),
+                Proposer = blockAdded.Block.Proposer.PublicKey.ToString(),
                 TransactionCount = (uint)blockAdded.Block.Transactions.Count,
             });
             OnBlockAdded(blockAdded.Block);

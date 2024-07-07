@@ -165,6 +165,31 @@ namespace Casper.Network.SDK.Web
         }
         
         /// <summary>
+        /// Request the information of an Account in the network.
+        /// </summary>
+        /// <param name="accountHash">The account hash of the account.</param>
+        /// <param name="blockHash">A block hash for which the information of the account is queried. Null for most recent information.</param>
+        public async Task<RpcResponse<GetAccountInfoResult>> GetAccountInfo(AccountHashKey accountHash,
+            string blockHash = null)
+        {
+            _logger.LogInformation($"Call to GetAccountInfo");
+
+            return await CasperClient.GetAccountInfo(accountHash, blockHash);
+        }
+        
+        /// <summary>
+        /// Request the information of an Account in the network.
+        /// </summary>
+        /// <param name="accountHash">The account hash of the account.</param>
+        /// <param name="blockHeight">A block height for which the information of the account is queried.</param>
+        public async Task<RpcResponse<GetAccountInfoResult>> GetAccountInfo(AccountHashKey accountHash, int blockHeight)
+        {
+            _logger.LogInformation($"Call to GetAccountInfo");
+
+            return await CasperClient.GetAccountInfo(accountHash, blockHeight);
+        }
+        
+        /// <summary>
         /// Returns an AddressableEntity or a legacy Accountfrom the network for a Block from the network
         /// </summary>
         /// <param name="entityIdentifier">A PublicKey, an AccoountHashKey, or an AddressableEntityKey</param>

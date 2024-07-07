@@ -1,10 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using NCTLWebExplorer.Components;
+﻿using NCTLWebExplorer.Components;
 using Casper.Network.SDK.JsonRpc;
 using Casper.Network.SDK.Types;
-using Casper.Network.SDK.Web;
-using Microsoft.AspNetCore.Components;
-using Radzen;
+using NCTLWebExplorer.Utils;
 
 namespace NCTLWebExplorer.Pages;
 
@@ -14,29 +11,41 @@ public partial class QueryGlobalState
 
     private string GlobalStateKey { get; set; }
     private string Path { get; set; }
-    
+
     async Task QueryGlobalStateBtnClicked()
     {
         ErrorMessage = null;
-        
+        SuccessMessage = null;
+
+        if (string.IsNullOrWhiteSpace(GlobalStateKey))
+            return;
+
         if (CasperRpcService != null)
         {
+            GetKeyFromInput.TryParse(GlobalStateKey, out var key);
+
+            if (key == null || 
+                key is not Casper.Network.SDK.Types.GlobalStateKey)
+            {
+                ErrorMessage = "Wrong key value or format.";
+                return;
+            }
+
             try
             {
-                var key = Casper.Network.SDK.Types.GlobalStateKey.FromString(GlobalStateKey);
-                var rpcResponse = await CasperRpcService.QueryGlobalState(key, null,
+                var rpcResponse = await CasperRpcService.QueryGlobalState(key as GlobalStateKey,
+                    null,
                     string.IsNullOrWhiteSpace(Path) ? null : Path);
-                var json = rpcResponse.Result.GetRawText();
-                
-                var result = Regex.Replace(json, 
-                    "\"merkle_proof\":*\"[^\"]+\"", $"\"merkle_proof\":\"skipped\"");
-
-                await JsonViewerInstance.Render(result);
+                await JsonViewerInstance.Render(rpcResponse.Result.GetRawText());
                 // await JsonViewerInstance.Filter("/.+stored_value.+/");
             }
             catch (RpcClientException e)
             {
-                ErrorMessage = e.Message;
+                ErrorMessage = e.Message + ".\n" + e.Data;
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = "Wrong purse identifier value or format.";
             }
         }
     }

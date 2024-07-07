@@ -10,17 +10,8 @@ public class ExplorerComponent : ComponentBase
 {
     [Inject] protected ICasperClient CasperRpcService { get; set; }
 
-    [Inject] protected CasperSignerInterop SignerInterop { get; set; }
-
     [Inject] protected NotificationService NotificationService { get; set; }
     
     protected string SuccessMessage;
     protected string ErrorMessage;
-
-    protected async Task<Deploy> SignDeployWithSigner(Deploy deploy, string srcPk, string tgtPk)
-    {
-        await SignerInterop.RequestSignature(deploy, srcPk, tgtPk);
-
-        return deploy;
-    }
 }

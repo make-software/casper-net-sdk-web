@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Runtime.InteropServices;
+using Casper.Network.SDK.JsonRpc;
 using NCTLWebExplorer.Components;
 using Casper.Network.SDK.Types;
 using Microsoft.AspNetCore.Components;
@@ -26,13 +27,24 @@ public partial class DeployDetail
     {
         if (!string.IsNullOrWhiteSpace(DeployHash))
         {
-            var response = await CasperRpcService.GetDeploy(DeployHash);
-            _deployJson = response.Result.GetRawText();
-            var deployResult = response.Parse();
-            _deploy = deployResult.Deploy;
-            _blockHash = deployResult.ExecutionInfo.BlockHash;
-            _executionResult = deployResult.ExecutionInfo.ExecutionResult;
-            StateHasChanged();
+            try
+            {
+                var response = await CasperRpcService.GetDeploy(DeployHash);
+                _deployJson = response.Result.GetRawText();
+                var deployResult = response.Parse();
+                _deploy = deployResult.Deploy;
+                _blockHash = deployResult.ExecutionInfo.BlockHash;
+                _executionResult = deployResult.ExecutionInfo.ExecutionResult;
+                StateHasChanged();
+            }
+            catch (RpcClientException e)
+            {
+                ErrorMessage = e.Message + ".\n" + e.Data;
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message;
+            }
         }
     }
     
