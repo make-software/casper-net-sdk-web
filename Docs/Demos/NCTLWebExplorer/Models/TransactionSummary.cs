@@ -21,4 +21,5 @@ public class TransactionSummary
     public string Initiator { get; set; }
     public string Timestamp { get; set; }
     public int MessageCount { get; set; }
+    public string Messages { get; set; }
 }

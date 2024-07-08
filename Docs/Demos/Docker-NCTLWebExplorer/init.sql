@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS Transactions (
     Result VARCHAR(16) NOT NULL,
     Initiator VARCHAR(128) NOT NULL,
     Timestamp DATETIME NOT NULL,
-    MessageCount INT NOT NULL
+    MessageCount INT NOT NULL,
+    Messages JSON NOT NULL
 );
 
 CREATE INDEX transaction_timestamp_index

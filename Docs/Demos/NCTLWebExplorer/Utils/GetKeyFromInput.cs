@@ -13,7 +13,8 @@ public class GetKeyFromInput
 
         try
         {
-            key = GlobalStateKey.FromString(input) as IEntityIdentifier;
+            key = GlobalStateKey.FromString(input);
+            if (key != null) return true;
         }
         catch
         {

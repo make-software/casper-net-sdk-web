@@ -9,17 +9,17 @@ public class MysqlEventStore : IEventStore, IDisposable
     private readonly ILogger<EventListener> _logger;
 
     private readonly string _connectionString;
-    
+
     public MysqlEventStore(string connectionString, ILogger<EventListener> logger)
     {
         _connectionString = connectionString;
         _logger = logger;
     }
-    
+
     public void Dispose()
     {
     }
-    
+
     public void AddStep(StepSummary step)
     {
         try
@@ -38,9 +38,9 @@ public class MysqlEventStore : IEventStore, IDisposable
                     command.Parameters.AddWithValue("@EraId", step.EraId);
                     command.Parameters.AddWithValue("@RawJson", step.Json);
 
-                    var n =command.ExecuteNonQuery();
-                
-                    if(n > 0)
+                    var n = command.ExecuteNonQuery();
+
+                    if (n > 0)
                         _logger.LogInformation($"Added step to store for era {step.EraId}");
                     else
                         _logger.LogError($"Could not store step for era {step.EraId} ");
@@ -77,10 +77,11 @@ public class MysqlEventStore : IEventStore, IDisposable
                     command.Parameters.AddWithValue("@Proposer", block.Proposer);
                     command.Parameters.AddWithValue("@TransactionCount", block.TransactionCount);
 
-                    var n =command.ExecuteNonQuery();
-                
-                    if(n > 0)
-                        _logger.LogInformation($"Added block to store for era {block.EraId} with height {block.Height}");
+                    var n = command.ExecuteNonQuery();
+
+                    if (n > 0)
+                        _logger.LogInformation(
+                            $"Added block to store for era {block.EraId} with height {block.Height}");
                     else
                         _logger.LogError($"Could not store block for era {block.EraId} with height {block.Height}");
                 }
@@ -100,9 +101,9 @@ public class MysqlEventStore : IEventStore, IDisposable
             {
                 connection.Open();
                 string query = @"INSERT INTO Transactions
-                            (Id, Category, Version, Hash, BlockHash, Result, Initiator, Timestamp, MessageCount) 
+                            (Id, Category, Version, Hash, BlockHash, Result, Initiator, Timestamp, MessageCount, Messages) 
                             VALUES 
-                            (@Id, @Category, @Version, @Hash, @BlockHash, @Result, @Initiator, @Timestamp, @MessageCount)";
+                            (@Id, @Category, @Version, @Hash, @BlockHash, @Result, @Initiator, @Timestamp, @MessageCount, @Messages)";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -115,10 +116,11 @@ public class MysqlEventStore : IEventStore, IDisposable
                     command.Parameters.AddWithValue("@Initiator", transaction.Initiator);
                     command.Parameters.AddWithValue("@Timestamp", DateTime.Parse(transaction.Timestamp));
                     command.Parameters.AddWithValue("@MessageCount", transaction.MessageCount);
+                    command.Parameters.AddWithValue("@Messages", transaction.Messages);
 
-                    var n =command.ExecuteNonQuery();
-                
-                    if(n > 0)
+                    var n = command.ExecuteNonQuery();
+
+                    if (n > 0)
                         _logger.LogInformation($"Added transaction to store with hash {transaction.Hash}");
                     else
                         _logger.LogError($"Could not store transaction with hash {transaction.Hash}");
@@ -130,15 +132,15 @@ public class MysqlEventStore : IEventStore, IDisposable
             _logger.LogError($"Could not store transaction. Error: {e.Message}");
         }
     }
-    
+
     public async Task<PaginatedSummary<StepSummary>> GetSteps(int skip, int pageSize)
     {
         try
         {
             var paginatedData = new PaginatedSummary<StepSummary>();
-            
+
             var data = new List<StepSummary>();
-            
+
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
@@ -167,7 +169,7 @@ public class MysqlEventStore : IEventStore, IDisposable
                     }
 
                     paginatedData.Data = data;
-                    
+
                     string countQuery = "SELECT COUNT(*) FROM Steps";
 
                     using (MySqlCommand countCommand = new MySqlCommand(countQuery, connection))
@@ -195,17 +197,17 @@ public class MysqlEventStore : IEventStore, IDisposable
 
     public async Task<PaginatedSummary<BlockSummary>> GetBlocks(int skip, int pageSize)
     {
-
         try
         {
             var paginatedData = new PaginatedSummary<BlockSummary>();
-            
+
             var data = new List<BlockSummary>();
-            
+
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                string query = @"SELECT Id, Hash, EraId, Height, ProtocolVersion, Timestamp, IsEraEnd, Proposer, TransactionCount 
+                string query =
+                    @"SELECT Id, Hash, EraId, Height, ProtocolVersion, Timestamp, IsEraEnd, Proposer, TransactionCount 
                              FROM Blocks 
                              ORDER BY Timestamp DESC 
                              LIMIT @pageSize OFFSET @skip";
@@ -236,7 +238,7 @@ public class MysqlEventStore : IEventStore, IDisposable
                     }
 
                     paginatedData.Data = data;
-                    
+
                     string countQuery = "SELECT COUNT(*) FROM Blocks";
 
                     using (MySqlCommand countCommand = new MySqlCommand(countQuery, connection))
@@ -267,13 +269,14 @@ public class MysqlEventStore : IEventStore, IDisposable
         try
         {
             var paginatedData = new PaginatedSummary<TransactionSummary>();
-            
+
             var data = new List<TransactionSummary>();
-            
+
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                string query = @"SELECT Id, Category, Version, Hash, BlockHash, Result, Initiator, Timestamp, MessageCount 
+                string query =
+                    @"SELECT Id, Category, Version, Hash, BlockHash, Result, Initiator, Timestamp, MessageCount, Messages 
                              FROM Transactions 
                              ORDER BY Timestamp DESC 
                              LIMIT @pageSize OFFSET @skip";
@@ -297,14 +300,15 @@ public class MysqlEventStore : IEventStore, IDisposable
                                 Result = reader["Result"].ToString(),
                                 Initiator = reader["Initiator"].ToString(),
                                 Timestamp = reader["Timestamp"].ToString(),
-                                MessageCount = Convert.ToInt32(reader["MessageCount"])
+                                MessageCount = Convert.ToInt32(reader["MessageCount"]),
+                                Messages = reader["Messages"].ToString(),
                             };
                             data.Add(summary);
                         }
                     }
 
                     paginatedData.Data = data;
-                    
+
                     string countQuery = "SELECT COUNT(*) FROM Transactions";
 
                     using (MySqlCommand countCommand = new MySqlCommand(countQuery, connection))
@@ -329,13 +333,64 @@ public class MysqlEventStore : IEventStore, IDisposable
             };
         }
     }
-    
+
+    public async Task<TransactionSummary> GetTransactionByHash(string hash)
+    {
+        try
+        {
+            var data = new List<TransactionSummary>();
+
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                string query =
+                    @"SELECT Id, Category, Version, Hash, BlockHash, Result, Initiator, Timestamp, MessageCount, Messages 
+                             FROM Transactions 
+                             WHERE Hash = @hash
+                             ORDER BY Timestamp DESC";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@hash", hash);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            TransactionSummary summary = new TransactionSummary
+                            {
+                                EventId = Convert.ToUInt64(reader["Id"]),
+                                Category = reader["Category"].ToString(),
+                                Version = reader["Version"].ToString(),
+                                Hash = reader["Hash"].ToString(),
+                                BlockHash = reader["BlockHash"].ToString(),
+                                Result = reader["Result"].ToString(),
+                                Initiator = reader["Initiator"].ToString(),
+                                Timestamp = reader["Timestamp"].ToString(),
+                                MessageCount = Convert.ToInt32(reader["MessageCount"]),
+                                Messages = reader["Messages"].ToString(),
+                            };
+                            data.Add(summary);
+                        }
+                    }
+                }
+            }
+
+            return data.FirstOrDefault();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Cannot get transactions. Error: " + e.Message);
+            return null;
+        }
+    }
+
     public async Task<StepSummary> GetStepByEraId(ulong eraId)
     {
         try
         {
             var data = new List<StepSummary>();
-            
+
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
@@ -371,7 +426,7 @@ public class MysqlEventStore : IEventStore, IDisposable
             return null;
         }
     }
-    
+
     public async Task<ulong> GetHighestEventIdAsync()
     {
         ulong maxId = 0;
@@ -397,7 +452,7 @@ public class MysqlEventStore : IEventStore, IDisposable
 
         return maxId;
     }
-    
+
     public ulong GetHighestEventId()
     {
         ulong maxId = 0;

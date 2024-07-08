@@ -89,7 +89,14 @@ public class MemoryEventStore : IEventStore
 
         return Task.FromResult(result);
     }
-    
+
+    public Task<TransactionSummary> GetTransactionByHash(string hash)
+    {
+        var result = _transactions.FirstOrDefault(tx => tx.Hash == hash);
+
+        return Task.FromResult(result);
+    }
+
     public Task<StepSummary> GetStepByEraId(ulong eraId)
     {
         return Task.FromResult(_steps.FirstOrDefault(step => step.EraId == eraId));

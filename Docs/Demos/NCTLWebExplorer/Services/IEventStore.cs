@@ -14,6 +14,8 @@ public interface IEventStore
     
     public Task<PaginatedSummary<TransactionSummary>> GetTransactions(int skip, int pageSize);
     
+    public Task<TransactionSummary> GetTransactionByHash(string hash);
+    
     public Task<StepSummary> GetStepByEraId(ulong eraId);
 
 }

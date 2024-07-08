@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Casper.Network.SDK.SSE;
 using Casper.Network.SDK.Types;
 using NCTLWebExplorer.Models;
@@ -44,6 +45,11 @@ public class EventListener
     public async Task<PaginatedSummary<TransactionSummary>> GetTransactions(int skip, int pageSize)
     {
         return await _store.GetTransactions(skip, pageSize);
+    }
+
+    public async Task<TransactionSummary> GetTransactionByHash(string hash)
+    {
+        return await _store.GetTransactionByHash(hash);
     }
 
     public async Task<StepSummary> GetStepByEraId(ulong eraId)
@@ -134,12 +140,22 @@ public class EventListener
                 Category = "Deploy",
                 Version = "Deploy",
                 Result = deployProcessed.ExecutionResult.IsSuccess ? "Success" : "Failure",
+                MessageCount = 0,
+                Messages = "[]",
             });
             OnDeployAdded(deployProcessed);
         }
         else if (evt.EventType == EventType.TransactionProcessed)
         {
             var transactionProcessed = evt.Parse<TransactionProcessed>();
+            var messages = "[]";
+            var txProcessed = evt.Result.GetProperty("TransactionProcessed");
+            if (txProcessed.ValueKind == JsonValueKind.Object)
+            {
+                var msgProperty = txProcessed.GetProperty("messages");
+                if (msgProperty.ValueKind == JsonValueKind.Array)
+                    messages = msgProperty.GetRawText();
+            }
             _store.AddTransaction(new TransactionSummary()
             {
                 EventId = (ulong)evt.Id,
@@ -154,6 +170,7 @@ public class EventListener
                 Version = transactionProcessed.TransactionHash.Deploy != null ? "Deploy" : "Version1",
                 Result = transactionProcessed.ExecutionResult.ErrorMessage == null ? "Success" : "Failure",
                 MessageCount = transactionProcessed.Messages.Count,
+                Messages = messages,
             });
             _logger.LogDebug("Transaction added to event store.");
             OnTransactionAdded(transactionProcessed);

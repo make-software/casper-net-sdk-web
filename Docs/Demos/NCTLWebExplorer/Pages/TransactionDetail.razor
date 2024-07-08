@@ -47,8 +47,22 @@ else
                     </div>
                 </div>
             </RadzenCard>
-            
-            <RpcJsonViewer @ref="JsonViewerInstance" Json="@_transactionJson"></RpcJsonViewer>
+
+            <RadzenCard class="mt-4">
+                <h3 class="h5">Messages</h3>
+                @if (_messages.Count == 0)
+                {
+                    <span>No messages in this transaction.</span>
+                }
+                else
+                {
+                    <MessagesTable Messages="@_messages" />
+                }
+            </RadzenCard>
+
+            <div class="col-lg-12 mt-3 mb-4">
+                <RpcJsonViewer @ref="JsonViewerInstance" />
+            </div>
 
         </div>
     </div>

@@ -1,10 +1,11 @@
 using System.Globalization;
-using System.Runtime.InteropServices;
+using System.Text.Json;
 using Casper.Network.SDK.JsonRpc;
 using NCTLWebExplorer.Components;
 using Casper.Network.SDK.Types;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
+using NCTLWebExplorer.Models;
+using NCTLWebExplorer.Services;
 
 namespace NCTLWebExplorer.Pages;
 
@@ -16,13 +17,15 @@ public partial class TransactionDetail
     [Parameter]
     public string TransactionV1Hash { get; set; }
 
+    [Inject] protected EventListener EventListener { get; set; }
+
     private RpcJsonViewer JsonViewerInstance { get; set; }
 
     private string _transactionJson;
     private TransactionV1 _transaction;
     private string _blockHash;
     private ExecutionResult _executionResult;
-    
+    private List<MessageSummary> _messages = new();
     protected override async Task OnInitializedAsync()
     {
         if (!string.IsNullOrWhiteSpace(TransactionV1Hash))
@@ -36,6 +39,7 @@ public partial class TransactionDetail
                 _transaction = transactionResult.Transaction.TransactionV1;
                 _blockHash = transactionResult.ExecutionInfo.BlockHash;
                 _executionResult = transactionResult.ExecutionInfo.ExecutionResult;
+
                 StateHasChanged();
             }
             catch (RpcClientException e)
@@ -45,6 +49,17 @@ public partial class TransactionDetail
             catch (Exception e)
             {
                 ErrorMessage = e.Message;
+            }
+
+            try
+            {
+                var tx = await EventListener.GetTransactionByHash(TransactionV1Hash);
+                if (tx != null && !string.IsNullOrWhiteSpace(tx.Messages))
+                    _messages = JsonSerializer.Deserialize<List<MessageSummary>>(tx.Messages);
+            }
+            catch 
+            {
+                // ignored
             }
         }
     }

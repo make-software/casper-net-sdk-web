@@ -1,0 +1,36 @@
+@using Casper.Network.SDK.Types
+@using NCTLWebExplorer.Models
+<div class="row">
+    <div class="col-lg-12">
+        <RadzenDataGrid @ref="_messageGrid" AllowFiltering="true"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        FilterMode="FilterMode.Advanced"
+                        AllowPaging="true"
+                        PageSize="20"
+                        PagerHorizontalAlign="HorizontalAlign.Center"
+                        AllowSorting="true"
+                        Data="@_messages"
+                        TItem="MessageSummary"
+                        IsLoading="@_isLoading"
+                        Count="@_count"
+                        LoadData="@LoadData">
+            <Columns>
+                <RadzenDataGridColumn TItem="MessageSummary" Property="TopicName" Title="Topic Name" Type="typeof(string)">
+                    <Template>
+                        @context.TopicName 
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="MessageSummary" Property="EntityHash" Title="Entity" Type="typeof(string)">
+                    <Template>
+                        @context.EntityHash
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="MessageSummary" Property="Message" Title="Message" Type="typeof(string)">
+                    <Template>
+                        @(context.Message.String != null ? context.Message.String : context.Message.Bytes)
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+</div>
