@@ -23,8 +23,19 @@ jobs:
             context: .
 
     steps:
-    - name: Checkout
+    - name: Checkout casper-net-sdk repo
       uses: actions/checkout@v4
+      with:
+        repository: make-software/casper-net-sdk
+        ref: feat-2-0/rc2-tests
+        path: casper-net-sdk
+        
+    - name: Checkout net-sdk-web repo
+      uses: actions/checkout@v4
+      with:
+        repository: make-software/casper-net-sdk-web
+        ref: feat-2.0
+        path: casper-net-sdk-web
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
