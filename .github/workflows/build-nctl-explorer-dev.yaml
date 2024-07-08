@@ -19,7 +19,7 @@ jobs:
         include:
           - name: client
             repository: ECR_REPOSITORY_NET_SDK_WEB
-            dockerfile: Docs/Demos/Docker-NCTLWebExplorer/NCTLWebExplorer.Dockerfile
+            dockerfile: casper-net-sdk-web/Docs/Demos/Docker-NCTLWebExplorer/NCTLWebExplorer.Dockerfile
             context: .
 
     steps:
