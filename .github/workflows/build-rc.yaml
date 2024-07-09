@@ -1,0 +1,65 @@
+name: (RC) Build image
+
+on:
+  push:
+    branches:
+      - 'rc-*'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    name: Build Images
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: client
+            repository: ECR_REPOSITORY_NET_SDK_WEB
+            dockerfile: casper-net-sdk-web/Docs/Demos/Docker-NCTLWebExplorer/NCTLWebExplorer.Dockerfile
+            context: .
+
+    steps:
+    - name: Checkout casper-net-sdk repo
+      uses: actions/checkout@v4
+      with:
+        repository: make-software/casper-net-sdk
+        ref: feat-2-0/rc2-tests
+        path: casper-net-sdk
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        path: casper-net-sdk-web
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ACCESS_ROLE_DEV }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: |
+          ${{ steps.login-ecr.outputs.registry }}/${{ secrets[format('{0}', matrix.repository)] }}
+        tags: |
+          type=raw,value={{branch}}-{{sha}}
+
+    - name: Build and push up
+      uses: docker/build-push-action@v5
+      with:
+        file: ${{ matrix.dockerfile }}
+        context: ${{ matrix.context }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        platforms: linux/amd64
+        push: true
