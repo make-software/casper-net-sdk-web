@@ -75,6 +75,7 @@ public class EventListener
         }
         else
         {
+            startFrom = 0;
             _store = new MemoryEventStore(_logger);
             _logger.LogInformation("Using MemoryEventStore");
         }

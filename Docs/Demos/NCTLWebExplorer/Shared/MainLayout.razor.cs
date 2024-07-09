@@ -15,18 +15,24 @@ public partial class MainLayout
     [Inject] protected EventListener EventListener { get; set; }
 
     [Inject] protected ICasperClient CasperRpcService { get; set; }
+    
+    [Inject] protected IConfiguration Config { get; set; }
 
     private string _activePk = string.Empty;
 
     private string _statusMessage = "";
     private string _buildVersion = "";
-    
+
+    private string _PageTitle = "Casper Mini explorer";
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await OnConnectToCondor();
 
+            if (Config["PageTitle"] != null)
+                _PageTitle = Config["PageTitle"];
+            
             StateHasChanged();
         }
     }
