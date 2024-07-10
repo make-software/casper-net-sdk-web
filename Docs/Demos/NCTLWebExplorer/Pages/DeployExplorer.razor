@@ -26,7 +26,7 @@
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="TransactionSummary" Property="Version" Title="Version" Type="typeof(string)">
                     <Template>
-                        @context.Version
+                        @(context.Version == "Version1" ? "TransactionV1" : context.Version)
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="TransactionSummary" Property="BlockHash" Title="Block hash" Type="typeof(string)">
