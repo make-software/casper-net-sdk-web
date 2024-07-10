@@ -70,3 +70,7 @@ h3 span.gskey {
 .sidebar {
     min-width: 250px;
 }
+
+div:has(> json-viewer) {
+    overflow: scroll;
+}

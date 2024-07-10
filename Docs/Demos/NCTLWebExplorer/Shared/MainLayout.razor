@@ -2,21 +2,52 @@
 
 <PageTitle>@_PageTitle</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu Title="@_PageTitle"/>
-    </div>
-    <RadzenNotification />
-    <main>
-        <div class="top-row mx-4 px-4">
-            @_statusMessage
-            <RadzenButton Click="@(_ => OnConnectToCondor())" Icon="autorenew" 
-                          Text="@("Build " + _buildVersion)" ButtonStyle="ButtonStyle.Light" 
-                          />
-        </div>
+<RadzenLayout>
+    <RadzenHeader>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="0">
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="0">
+                <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)"/>
+                <RadzenText TextStyle="TextStyle.H4" Style="margin-bottom: 0">@_PageTitle</RadzenText>
+            </RadzenStack>
 
-        <article class="content px-4">
+            @_statusMessage
+            <RadzenButton Click="@(_ => OnConnectToCondor())" Icon="autorenew"
+                          Text="@("Build " + _buildVersion)" 
+                          ButtonStyle="ButtonStyle.Light"
+                          Style="margin-right: 16px"/>
+        </RadzenStack>
+
+
+    </RadzenHeader>
+    <RadzenSidebar @bind-Expanded="@sidebarExpanded">
+        <RadzenPanelMenu class="mt-4">
+            <RadzenPanelMenuItem Text="View Blocks" Icon="label" Path="/blocks"/>
+            <RadzenPanelMenuItem Text="View Steps" Icon="label" Path="/steps"/>
+            <RadzenPanelMenuItem Text="View Transactions" Icon="label" Path="/transactions"/>
+            <RadzenPanelMenuItem Text="Get Global State Key" Icon="label" Path="/query-global-state"/>
+            <RadzenPanelMenuItem Text="Get Entity" Icon="label" Path="/get-entity"/>
+            <RadzenPanelMenuItem Text="Get Balance" Icon="label" Path="/get-balance"/>
+            <RadzenPanelMenuItem Text="Get Dictionary Item" Icon="label" Path="/dictionary-item"/>
+        </RadzenPanelMenu>
+    </RadzenSidebar>
+    <RadzenBody>
+        <div class="rz-p-4">
             @Body
-        </article>
-    </main>
-</div>
+        </div>
+    </RadzenBody>
+    <RadzenFooter>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="0">
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" AlignItems="AlignItems.Center" Gap="0">
+                <div>Made with&nbsp;&nbsp;❤&nbsp;&nbsp;by</div>
+                <a href="https://makegroup.io/">
+                    <img src="/assets/make-logo.png" alt="MAKE logo" style="    padding: 0 8px 0; height: 24px;"/>
+                </a>
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.End" Gap="0">
+                <div>Built with Casper .NET SDK v3.0.0-beta1</div>
+                <div>Explorer version: v0.2.0</div>
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenFooter>
+</RadzenLayout>
+<RadzenNotification/>

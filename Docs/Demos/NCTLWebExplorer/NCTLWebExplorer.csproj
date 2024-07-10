@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="MySql.Data" Version="9.0.0" />
-      <PackageReference Include="Radzen.Blazor" Version="3.13.10" />
+      <PackageReference Include="Radzen.Blazor" Version="4.33.3" />
     </ItemGroup>
 
     <ItemGroup>
