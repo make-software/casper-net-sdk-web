@@ -8,3 +8,4 @@ riderModule.iml
 *.DotSettings.user
 Casper.Network.SDK.Web/npm_packages/node_modules/*
 *.wasm
+DevNetChecks/
