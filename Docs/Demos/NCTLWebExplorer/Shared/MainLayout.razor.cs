@@ -31,15 +31,18 @@ public partial class MainLayout
     private bool sidebarExpanded = true;
     
     private string _PageTitle = "Casper Mini explorer";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Config["PageTitle"] != null)
+            _PageTitle = Config["PageTitle"];
+    }
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await GetNodeStatus();
-
-            if (Config["PageTitle"] != null)
-                _PageTitle = Config["PageTitle"];
-            
             StateHasChanged();
         }
     }
