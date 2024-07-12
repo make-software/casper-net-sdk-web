@@ -16,6 +16,8 @@ public enum AccountInfoMethod
 
 public partial class GetEntity
 {
+    [Inject] protected ILogger<GetEntity> Logger { get; set; }
+
     [Parameter] public string AccountPublicKey { get; set; }
 
     private int _queryMethod;
@@ -54,6 +56,7 @@ public partial class GetEntity
                     if (key == null || 
                         (key is not IEntityIdentifier))
                     {
+                        Logger.LogError($"Cannot convert '{EntityAddress}' to entity identifier. key: '{key}'");
                         ErrorMessage = "Wrong entity identifier value or format.";
                         return;
                     }
@@ -69,10 +72,12 @@ public partial class GetEntity
                     }
                     catch (RpcClientException e)
                     {
+                        Logger.LogError($"RPC Error getting entity: {e.Message} - {e.Data}'");
                         ErrorMessage = e.Message + ".\n" + e.Data;
                     }
                     catch (Exception e)
                     {
+                        Logger.LogError($"Error getting entity: {e.Message}'");
                         ErrorMessage = "Wrong entity identifier value or format.";
                     }
                 }
@@ -83,6 +88,7 @@ public partial class GetEntity
                     if (key == null || 
                         (key is not PublicKey && key is not AccountHashKey))
                     {
+                        Logger.LogError($"Cannot convert '{EntityAddress}' to public key or account hash. key: '{key}'");
                         ErrorMessage = "Wrong entity identifier value or format.";
                         return;
                     }
@@ -104,10 +110,12 @@ public partial class GetEntity
                     }
                     catch (RpcClientException e)
                     {
+                        Logger.LogError($"RPC Error getting account info: {e.Message} - {e.Data}'");
                         ErrorMessage = e.Message + ".\n" + e.Data;
                     }
                     catch (Exception e)
                     {
+                        Logger.LogError($"Error getting account info: {e.Message}'");
                         ErrorMessage = "Wrong entity identifier value or format.";
                     }
                 }
