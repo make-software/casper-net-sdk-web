@@ -17,10 +17,12 @@ else
     <div class="row">
         <div class="col-lg-12">
             <RadzenCard>
-                <h3 class="h5">Block @BlockHash</h3>
+                <h3 class="h5"><b>Hash:</b><span class="gskey">@BlockHash</span></h3>
                 <div class="row">
                     <div class="col-md-4">
-                        <div >Block Height</div>
+                        <div>Timestamp</div>
+                        <b>@(_block.Timestamp)</b>
+                        <div  class="mt-1" >Block Height</div>
                         <b>@(_block.Height)</b>
                         <div class="mt-1">Era Id</div>
                         <b>@(_block.EraId)</b>
@@ -28,14 +30,21 @@ else
                         <b>@(_block.EraEnd != null ? "Yes" : "No")</b>
                     </div>
                     <div class="col-md-8">
-                        <div>Timestamp</div>
-                        <b>@(_block.Timestamp)</b>
                         <div class="mt-1">Parent Hash</div>
                         <b>
                             <a href="/blocks/@(_block.ParentHash)">@(_block.ParentHash)</a>
                         </b>
                         <div class="mt-1">State Root Hash</div>
                         <b>@(_block.StateRootHash)</b>
+                        <div class="mt-1">Proposer</div>
+                        @if (_block.Proposer.IsSystem)
+                           {
+                               <b>00</b>  
+                           }
+                           else
+                           {
+                                <b><a href="/get-entity/@(_block.Proposer)">@_block.Proposer.PublicKey.FormatPublicKey()</a></b>
+                           }
                     </div>
                 </div>
             </RadzenCard>

@@ -25,13 +25,14 @@ else
                         <div class="mt-3">Result</div>
                         <b>@(_executionResult.ErrorMessage == null ? "Success" : "Failed")</b>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-4">
                         <div>Initiator</div>
-                        <b><a href="/get-entity/@(_deploy.Header.Account)">@(_deploy.Header.Account)</a></b>
+                        <b><a href="/get-entity/@(_deploy.Header.Account)">@(_deploy.Header.Account.ToString().FormatHash())</a></b>
                         
                         <div class="mt-3">Block Hash</div>
-                        <b><a href="/blocks/@(_blockHash)">@(_blockHash)</a></b>
-
+                        <b><a href="/blocks/@(_blockHash)">@(_blockHash.FormatHash())</a></b>
+                    </div>
+                    <div class="col-md-4">
                         <div class="mt-3">Cost</div>
                         <b>@(_executionResult.Cost)</b>
                     </div>

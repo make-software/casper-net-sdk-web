@@ -26,6 +26,9 @@ else
                         <b>@(_executionResult.ErrorMessage == null ? "Success" : "Failed")</b>
                     </div>
                     <div class="col-md-4">
+                        <div>Initiator</div>
+                        <b><a href="/get-entity/@(_transaction.Header.InitiatorAddr)">@(_transaction.Header.InitiatorAddr.ToString().FormatHash())</a></b>
+                        
                         <div>Block Hash</div>
                         <b><a href="/blocks/@(_blockHash)">@(_blockHash.FormatHash())</a></b>
 
