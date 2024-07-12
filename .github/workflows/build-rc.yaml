@@ -26,7 +26,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: make-software/casper-net-sdk
-        ref: feat-2-0/rc2-tests
+        ref: casper-2.0.0
         path: casper-net-sdk
 
     - name: Checkout
