@@ -26,18 +26,17 @@ public partial class GetEntity
 
     private string EntityAddress { get; set; }
     
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!string.IsNullOrWhiteSpace(AccountPublicKey))
+        if (firstRender && !string.IsNullOrWhiteSpace(AccountPublicKey))
         {
             EntityAddress = AccountPublicKey;
             await GetEntityBtnClicked();
             StateHasChanged();
         }
-        
-        await base.OnInitializedAsync();
+
+        await base.OnAfterRenderAsync(firstRender);
     }
-    
     async Task GetEntityBtnClicked()
     {
         ErrorMessage = null;
