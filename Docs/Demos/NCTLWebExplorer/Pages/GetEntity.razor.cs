@@ -25,7 +25,18 @@ public partial class GetEntity
     protected RpcJsonViewer JsonViewerInstance { get; set; }
 
     private string EntityAddress { get; set; }
-    
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(AccountPublicKey))
+        {
+            EntityAddress = AccountPublicKey;
+            SuccessMessage = "Loading entity...";
+            StateHasChanged();
+        }
+        
+        await base.OnInitializedAsync();
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !string.IsNullOrWhiteSpace(AccountPublicKey))
