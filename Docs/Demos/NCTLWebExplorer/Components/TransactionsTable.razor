@@ -27,7 +27,7 @@
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="BlockTransaction" Property="Version" Title="Version" Type="typeof(string)">
                     <Template>
-                        @context.Version.ToString()
+                        @(context.Version == TransactionVersion.TransactionV1 ? "TransactionV1" : "Deploy")
                     </Template>
                 </RadzenDataGridColumn>
             </Columns>

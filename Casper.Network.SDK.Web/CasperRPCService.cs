@@ -20,33 +20,33 @@ namespace Casper.Network.SDK.Web
 
         private readonly string _nodeAddress;
         private readonly string _clientFactoryName;
-        
-        private NetCasperClient CasperClient => 
+
+        private NetCasperClient CasperClient =>
             new NetCasperClient(_nodeAddress, _clientFactory.CreateClient(_clientFactoryName));
-        
+
         public string ChainName { get; }
-        
+
         public CasperRPCService(IHttpClientFactory httpClientFactory,
             IConfiguration config,
             ILogger<CasperRPCService> logger)
         {
             _clientFactory = httpClientFactory;
             _logger = logger;
-            
+
             _nodeAddress = config["Casper.Network.SDK.Web:NodeAddress"];
             if (_nodeAddress == null)
                 throw new Exception("Casper.Network.SDK.Web:NodeAddress configuration key not found!");
-            
+
             _logger.LogDebug("RPCService node address: " + _nodeAddress);
-            
+
             _clientFactoryName = config["Casper.Network.SDK.Web:ClientFactory"];
             if (_nodeAddress == null)
                 _clientFactoryName = "caspernode";
-            
+
             ChainName = config["Casper.Network.SDK.Web:ChainName"];
             if (ChainName == null)
                 throw new Exception("Casper.Network.SDK.Web:ChainName configuration key not found!");
-            
+
             _logger.LogDebug("RPCService chain name: " + ChainName);
         }
 
@@ -65,7 +65,7 @@ namespace Casper.Network.SDK.Web
         /// Request the state root hash at a given Block.
         /// </summary>
         /// <param name="blockHeight">Block height for which the state root is queried.</param>
-        public async Task<string> GetStateRootHash(int blockHeight)
+        public async Task<string> GetStateRootHash(ulong blockHeight)
         {
             _logger.LogInformation($"Call to GetStateRootHash");
 
@@ -107,7 +107,7 @@ namespace Casper.Network.SDK.Web
         /// Request the bids and validators at a given block. 
         /// </summary>
         /// <param name="blockHeight">Block height for which the auction info is queried.</param>
-        public async Task<RpcResponse<GetAuctionInfoResult>> GetAuctionInfo(int blockHeight)
+        public async Task<RpcResponse<GetAuctionInfoResult>> GetAuctionInfo(ulong blockHeight)
         {
             _logger.LogInformation($"Call to GetAuctionInfo");
 
@@ -145,7 +145,7 @@ namespace Casper.Network.SDK.Web
         /// </summary>
         /// <param name="publicKey">The public key of the account.</param>
         /// <param name="blockHeight">A block height for which the information of the account is queried.</param>
-        public async Task<RpcResponse<GetAccountInfoResult>> GetAccountInfo(PublicKey publicKey, int blockHeight)
+        public async Task<RpcResponse<GetAccountInfoResult>> GetAccountInfo(PublicKey publicKey, ulong blockHeight)
         {
             _logger.LogInformation($"Call to GetAccountInfo");
 
@@ -157,13 +157,13 @@ namespace Casper.Network.SDK.Web
         /// </summary>
         /// <param name="publicKey">The public key of the account formatted as an hex-string.</param>
         /// <param name="blockHeight">A block height for which the information of the account is queried.</param>
-        public async Task<RpcResponse<GetAccountInfoResult>> GetAccountInfo(string publicKey, int blockHeight)
+        public async Task<RpcResponse<GetAccountInfoResult>> GetAccountInfo(string publicKey, ulong blockHeight)
         {
             _logger.LogInformation($"Call to GetAccountInfo");
 
             return await CasperClient.GetAccountInfo(publicKey, blockHeight);
         }
-        
+
         /// <summary>
         /// Request the information of an Account in the network.
         /// </summary>
@@ -176,31 +176,33 @@ namespace Casper.Network.SDK.Web
 
             return await CasperClient.GetAccountInfo(accountHash, blockHash);
         }
-        
+
         /// <summary>
         /// Request the information of an Account in the network.
         /// </summary>
         /// <param name="accountHash">The account hash of the account.</param>
         /// <param name="blockHeight">A block height for which the information of the account is queried.</param>
-        public async Task<RpcResponse<GetAccountInfoResult>> GetAccountInfo(AccountHashKey accountHash, int blockHeight)
+        public async Task<RpcResponse<GetAccountInfoResult>> GetAccountInfo(AccountHashKey accountHash,
+            ulong blockHeight)
         {
             _logger.LogInformation($"Call to GetAccountInfo");
 
             return await CasperClient.GetAccountInfo(accountHash, blockHeight);
         }
-        
+
         /// <summary>
         /// Returns an AddressableEntity or a legacy Accountfrom the network for a Block from the network
         /// </summary>
         /// <param name="entityIdentifier">A PublicKey, an AccoountHashKey, or an AddressableEntityKey</param>
         /// <param name="blockHash">A block hash for which the information of the entity is queried. Null for most recent information.</param>
-        public async Task<RpcResponse<GetEntityResult>> GetEntity(IEntityIdentifier entityIdentifier, string blockHash = null)
+        public async Task<RpcResponse<GetEntityResult>> GetEntity(IEntityIdentifier entityIdentifier,
+            string blockHash = null)
         {
             _logger.LogInformation($"Call to GetEntity");
 
             return await CasperClient.GetEntity(entityIdentifier, blockHash);
         }
-        
+
         /// <summary>
         /// Returns an AddressableEntity or a legacy Accountfrom the network for a Block from the network
         /// </summary>
@@ -212,7 +214,7 @@ namespace Casper.Network.SDK.Web
 
             return await CasperClient.GetEntity(entityIdentifier, blockHeight);
         }
-        
+
         /// <summary>
         /// Returns an AddressableEntity or a legacy Accountfrom the network for a Block from the network
         /// </summary>
@@ -224,7 +226,7 @@ namespace Casper.Network.SDK.Web
 
             return await CasperClient.GetEntity(entityAddr, blockHash);
         }
-        
+
         /// <summary>
         /// Returns an AddressableEntity or a legacy Accountfrom the network for a Block from the network
         /// </summary>
@@ -235,6 +237,20 @@ namespace Casper.Network.SDK.Web
             _logger.LogInformation($"Call to GetEntity");
 
             return await CasperClient.GetEntity(entityAddr, blockHeight);
+        }
+
+        /// <summary>
+        /// Request the stored value in a global state key.
+        /// </summary>
+        /// <param name="key">The global state key formatted as a string to query the value from the network.</param>
+        /// <param name="height">Height of the block to check the stored value in.</param>
+        /// <param name="path">The path components starting from the key as base (use '/' as separator).</param>
+        public async Task<RpcResponse<QueryGlobalStateResult>> QueryGlobalState(string key, ulong height,
+            string path = null)
+        {
+            _logger.LogInformation($"Call to QueryGlobalState");
+
+            return await CasperClient.QueryGlobalState(key, height, path);
         }
 
         /// <summary>
@@ -257,7 +273,8 @@ namespace Casper.Network.SDK.Web
         /// <param name="key">The global state key to query the value from the network.</param>
         /// <param name="stateRootHash">Hash of the state root. Null for the most recent stored value..</param>
         /// <param name="path">The path components starting from the key as base (use '/' as separator).</param>
-        public async Task<RpcResponse<QueryGlobalStateResult>> QueryGlobalState(GlobalStateKey key, string stateRootHash = null,
+        public async Task<RpcResponse<QueryGlobalStateResult>> QueryGlobalState(GlobalStateKey key,
+            string stateRootHash = null,
             string path = null)
         {
             _logger.LogInformation($"Call to QueryGlobalState");
@@ -271,7 +288,8 @@ namespace Casper.Network.SDK.Web
         /// <param name="key">The global state key formatted as a string to query the value from the network.</param>
         /// <param name="blockHash">The block hash.</param>
         /// <param name="path">The path components starting from the key as base (use '/' as separator).</param>
-        public async Task<RpcResponse<QueryGlobalStateResult>> QueryGlobalStateWithBlockHash(string key, string blockHash,
+        public async Task<RpcResponse<QueryGlobalStateResult>> QueryGlobalStateWithBlockHash(string key,
+            string blockHash,
             string path = null)
         {
             _logger.LogInformation($"Call to QueryGlobalStateWithBlockHash");
@@ -285,7 +303,8 @@ namespace Casper.Network.SDK.Web
         /// <param name="key">The global state key to query the value from the network.</param>
         /// <param name="blockHash">The block hash.</param>
         /// <param name="path">The path components starting from the key as base (use '/' as separator).</param>
-        public async Task<RpcResponse<QueryGlobalStateResult>> QueryGlobalStateWithBlockHash(GlobalStateKey key, string blockHash,
+        public async Task<RpcResponse<QueryGlobalStateResult>> QueryGlobalStateWithBlockHash(GlobalStateKey key,
+            string blockHash,
             string path = null)
         {
             _logger.LogInformation($"Call to QueryGlobalState");
@@ -312,43 +331,44 @@ namespace Casper.Network.SDK.Web
         /// </summary>
         /// <param name="purseIdentifier">A PublicKey, AccountHashKey, URef or EntityAddr to identify a purse.</param>
         /// <param name="blockHash">Hash of the block. Null to get latest available.</param>
-        public async Task<RpcResponse<QueryBalanceResult>> QueryBalance(IPurseIdentifier purseIdentifier, 
+        public async Task<RpcResponse<QueryBalanceResult>> QueryBalance(IPurseIdentifier purseIdentifier,
             string blockHash = null)
         {
             _logger.LogInformation(
                 $"Call to QueryBalance: {purseIdentifier}");
-            
+
             return await CasperClient.QueryBalance(purseIdentifier, blockHash);
         }
-        
+
         /// <summary>
         /// Request the balance information from a PublicKey, AccountHashKey, URef or EntityAddr.
         /// </summary>
         /// <param name="purseIdentifier">A PublicKey, AccountHashKey, URef or EntityAddr to identify a purse.</param>
         /// <param name="blockHeight">Height of the block.</param>
-        public async Task<RpcResponse<QueryBalanceResult>> QueryBalance(IPurseIdentifier purseIdentifier, 
+        public async Task<RpcResponse<QueryBalanceResult>> QueryBalance(IPurseIdentifier purseIdentifier,
             ulong blockHeight)
         {
             _logger.LogInformation(
                 $"Call to QueryBalance: {purseIdentifier}");
-            
+
             return await CasperClient.QueryBalance(purseIdentifier, blockHeight);
         }
-        
+
         /// <summary>
         /// Request the balance information from a PublicKey, AccountHashKey, URef or EntityAddr.
         /// </summary>
         /// <param name="purseIdentifier">A PublicKey, AccountHashKey, URef or EntityAddr to identify a purse.</param>
         /// <param name="stateRootHash">the state root hash.</param>
-        public async Task<RpcResponse<QueryBalanceResult>> QueryBalanceWithStateRootHash(IPurseIdentifier purseIdentifier,
+        public async Task<RpcResponse<QueryBalanceResult>> QueryBalanceWithStateRootHash(
+            IPurseIdentifier purseIdentifier,
             string stateRootHash)
         {
             _logger.LogInformation(
                 $"Call to QueryBalanceWithStateRootHash: {purseIdentifier}");
-            
+
             return await CasperClient.QueryBalanceWithStateRootHash(purseIdentifier, stateRootHash);
         }
-        
+
         public async Task<RpcResponse<QueryBalanceDetailsResult>> QueryBalanceDetails(IPurseIdentifier purseIdentifier,
             string blockHash = null)
         {
@@ -375,7 +395,7 @@ namespace Casper.Network.SDK.Web
 
             return await CasperClient.QueryBalanceDetailsWithStateRootHash(purseIdentifier, stateRootHash);
         }
-        
+
         /// <summary>
         /// Send a Deploy to the network for its execution.
         /// </summary>
@@ -402,14 +422,7 @@ namespace Casper.Network.SDK.Web
         {
             return await GetDeploy(deployHash, false, cancellationToken);
         }
-        
-        public async Task<RpcResponse<GetTransactionResult>> GetTransaction(TransactionHash transactionHash,
-            bool finalizedApprovals = false,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return await CasperClient.GetTransaction(transactionHash, false, cancellationToken);
-        }
-        
+
         /// <summary>
         /// Request a Deploy object from the network by the deploy hash.
         /// When a cancellation token is included this method waits until the deploy is
@@ -434,7 +447,7 @@ namespace Casper.Network.SDK.Web
                 if (!cancellationToken.CanBeCanceled ||
                     response.Result.GetProperty("execution_results").GetArrayLength() > 0)
                     return response;
-                
+
                 _logger.LogInformation($"Deploy not executed. Sleeping for 3s");
                 await Task.Delay(3000);
             }
@@ -443,6 +456,87 @@ namespace Casper.Network.SDK.Web
         }
 
         /// <summary>
+        /// Send a Transaction to the network for its execution.
+        /// </summary>
+        /// <param name="transaction">The transaction object.</param>
+        /// <exception cref="System.Exception">Throws an exception if the transaction is not signed.</exception>
+        public async Task<RpcResponse<PutTransactionResult>> PutTransaction(TransactionV1 transaction)
+        {
+            _logger.LogInformation($"Call to PutTransaction");
+
+            return await CasperClient.PutTransaction(transaction);
+        }
+
+        /// <summary>
+        /// Request a Transaction object from the network by the transaction (or deploy) hash.
+        /// When a cancellation token is included this method waits until the transaction is
+        /// executed, i.e. until the transaction contains the execution result information.
+        /// </summary>
+        /// <param name="transactionHash">An v1 transaction hash or a deploy hash</param>
+        /// <param name="finalizedApprovals">Whether to return the transaction with the finalized approvals
+        /// substituted. If `false` or omitted, returns the transaction with the approvals that were originally
+        /// received by the node.</param>
+        /// <param name="cancellationToken">A CancellationToken. Do not include this parameter to return
+        /// with the first transaction object returned by the network, even it's not executed.</param>
+        /// <exception cref="TaskCanceledException">The token has cancelled the operation before the deploy has been executed.</exception>
+        public async Task<RpcResponse<GetTransactionResult>> GetTransaction(TransactionHash transactionHash,
+            bool finalizedApprovals = false,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            _logger.LogInformation($"Call to GetTransaction");
+
+            return await CasperClient.GetTransaction(transactionHash, finalizedApprovals, cancellationToken);
+        }
+
+        /// <summary>
+        /// Request a Transaction object from the network by the transaction (or deploy) hash.
+        /// When a cancellation token is included this method waits until the transaction is
+        /// executed, i.e. until the transaction contains the execution result information.
+        /// </summary>
+        /// <param name="transactionHash">An v1 transaction hash or a deploy hash</param>
+        /// substituted. If `false` or omitted, returns the transaction with the approvals that were originally
+        /// received by the node.</param>
+        /// <param name="cancellationToken">A CancellationToken. Do not include this parameter to return
+        /// with the first transaction object returned by the network, even it's not executed.</param>
+        /// <exception cref="TaskCanceledException">The token has cancelled the operation before the deploy has been executed.</exception>
+        public async Task<RpcResponse<GetTransactionResult>> GetTransaction(TransactionHash transactionHash,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            _logger.LogInformation($"Call to GetTransaction");
+
+            return await CasperClient.GetTransaction(transactionHash, false, cancellationToken);
+        }
+
+        /// <summary>
+        /// Request a Transaction object from the network by the transaction hash.
+        /// When a cancellation token is included this method waits until the transaction is
+        /// executed, i.e. until the transaction contains the execution result information.
+        /// </summary>
+        /// <param name="version1Hash">A v1 transaction hash</param>
+        /// <param name="finalizedApprovals">Whether to return the transaction with the finalized approvals
+        /// substituted. If `false` or omitted, returns the transaction with the approvals that were originally
+        /// received by the node.</param>
+        /// <param name="cancellationToken">A CancellationToken. Do not include this parameter to return
+        /// with the first transaction object returned by the network, even it's not executed.</param>
+        /// <exception cref="TaskCanceledException">The token has cancelled the operation before the deploy has been executed.</exception>
+        public async Task<RpcResponse<GetTransactionResult>> GetTransaction(string transactionV1Hash,
+            bool finalizedApprovals,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            _logger.LogInformation($"Call to GetTransaction");
+
+            return await CasperClient.GetTransaction(transactionV1Hash, finalizedApprovals, cancellationToken);
+        }
+
+        public async Task<RpcResponse<GetTransactionResult>> GetTransaction(string transactionV1Hash,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            _logger.LogInformation($"Call to GetTransaction");
+
+            return await CasperClient.GetTransaction(transactionV1Hash, false, cancellationToken);
+        }
+
+    /// <summary>
         /// Retrieves a Block from the network by its hash. 
         /// </summary>
         /// <param name="blockHash">Hash of the block to retrieve. Null for the most recent block.</param>
@@ -457,7 +551,7 @@ namespace Casper.Network.SDK.Web
         /// Request a Block from the network by its height number.
         /// </summary>
         /// <param name="blockHeight">Height of the block to retrieve.</param>
-        public async Task<RpcResponse<GetBlockResult>> GetBlock(int blockHeight)
+        public async Task<RpcResponse<GetBlockResult>> GetBlock(ulong blockHeight)
         {
             _logger.LogInformation($"Call to GetBlock");
 
@@ -479,7 +573,7 @@ namespace Casper.Network.SDK.Web
         /// Request all transfers for a Block by its height number.
         /// </summary>
         /// <param name="blockHeight">Height of the block to retrieve the transfers from.</param>
-        public async Task<RpcResponse<GetBlockTransfersResult>> GetBlockTransfers(int blockHeight)
+        public async Task<RpcResponse<GetBlockTransfersResult>> GetBlockTransfers(ulong blockHeight)
         {
             _logger.LogInformation($"Call to GetBlockTransfers");
 
@@ -503,11 +597,33 @@ namespace Casper.Network.SDK.Web
         /// For a non-switch block this method returns an empty response.
         /// </summary>
         /// <param name="blockHeight">Block height of a switch block.</param>
-        public async Task<RpcResponse<GetEraInfoBySwitchBlockResult>> GetEraInfoBySwitchBlock(int blockHeight)
+        public async Task<RpcResponse<GetEraInfoBySwitchBlockResult>> GetEraInfoBySwitchBlock(ulong blockHeight)
         {
             _logger.LogInformation($"Call to GetEraInfoBySwitchBlock");
 
             return await CasperClient.GetEraInfoBySwitchBlock(blockHeight);
+        }
+        
+        /// <summary>
+        /// Request current Era Info from the network given a block hash
+        /// </summary>
+        /// <param name="blockHash">Block hash. Null for the latest block.</param>
+        public async Task<RpcResponse<GetEraSummaryResult>> GetEraSummary(string blockHash = null)
+        {
+            _logger.LogInformation($"Call to GetEraSummary");
+
+            return await CasperClient.GetEraSummary(blockHash);
+        }
+
+        /// <summary>
+        /// Request current Era Info from the network given a block hash
+        /// </summary>
+        /// <param name="blockHeight">Block height.</param>
+        public async Task<RpcResponse<GetEraSummaryResult>> GetEraSummary(ulong blockHeight)
+        {
+            _logger.LogInformation($"Call to GetEraSummary");
+
+            return await CasperClient.GetEraSummary(blockHeight);
         }
         
         /// <summary>
@@ -588,6 +704,48 @@ namespace Casper.Network.SDK.Web
             _logger.LogInformation($"Call to GetRpcSchema");
 
             return await CasperClient.GetRpcSchema();
+        }
+        
+        /// <summary>
+        /// Request the the chainspec.toml, genesis accounts.toml, and global_state.toml files of the node.
+        /// </summary>
+        public async Task<RpcResponse<GetChainspecResult>> GetChainspec()
+        {
+            _logger.LogInformation($"Call to GetChainspec");
+            
+            return await CasperClient.GetChainspec();
+        }
+        
+        /// <summary>
+        /// Sends a "deploy dry run" to the network. It will execute the deploy on top of the specified block and return
+        /// the results of the execution to the caller. The effects of the execution won't be committed to the trie
+        /// (blockchain database/GlobalState).
+        /// This method runs in a different port of the network (e.g.: 7778) and can be used for debugging, discovery.
+        /// For example price estimation.
+        /// </summary>
+        /// <param name="deploy">The deploy to execute.</param>
+        /// <param name="stateRootHash">Hash of the state root. null if deploy is to be executed on top of the latest block.</param>
+        public async Task<RpcResponse<SpeculativeExecutionResult>> SpeceulativeExecution(Deploy deploy, string stateRootHash = null)
+        {
+            _logger.LogInformation($"Call to SpeceulativeExecution");
+            
+            return await CasperClient.SpeceulativeExecution(deploy, stateRootHash);
+        }
+
+        /// <summary>
+        /// Sends a "deploy dry run" to the network. It will execute the deploy on top of the specified block and return
+        /// the results of the execution to the caller. The effects of the execution won't be committed to the trie
+        /// (blockchain database/GlobalState).
+        /// This method runs in a different port of the network (e.g.: 7778) and can be used for debugging, discovery.
+        /// For example price estimation.
+        /// </summary>
+        /// <param name="deploy">The deploy to execute.</param>
+        /// <param name="blockHash">Hash of the block on top of which the deploy is executed.</param>
+        public async Task<RpcResponse<PutDeployResult>> SpeceulativeExecutionWithBlockHash(Deploy deploy, string blockHash = null)
+        {
+            _logger.LogInformation($"Call to SpeceulativeExecutionWithBlockHash");
+            
+            return await CasperClient.SpeceulativeExecutionWithBlockHash(deploy, blockHash);
         }
     }
 }

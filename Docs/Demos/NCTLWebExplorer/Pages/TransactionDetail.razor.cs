@@ -3,6 +3,7 @@ using System.Text.Json;
 using Casper.Network.SDK.JsonRpc;
 using NCTLWebExplorer.Components;
 using Casper.Network.SDK.Types;
+using Casper.Network.SDK.Utils;
 using Microsoft.AspNetCore.Components;
 using NCTLWebExplorer.Models;
 using NCTLWebExplorer.Services;
@@ -22,7 +23,7 @@ public partial class TransactionDetail
     private RpcJsonViewer JsonViewerInstance { get; set; }
 
     private string _transactionJson;
-    private TransactionV1 _transaction;
+    private Transaction _transaction;
     private string _blockHash;
     private ExecutionResult _executionResult;
     private List<MessageSummary> _messages = new();
@@ -33,10 +34,10 @@ public partial class TransactionDetail
             try
             {
                 Console.WriteLine("Requesting transaction: " + TransactionV1Hash);
-                var response = await CasperRpcService.GetTransaction(new TransactionHash() { Version1 = TransactionV1Hash });
+                var response = await CasperRpcService.GetTransaction(new TransactionHash() { Version1 = TransactionV1Hash});
                 _transactionJson = response.Result.GetRawText();
                 var transactionResult = response.Parse();
-                _transaction = transactionResult.Transaction.TransactionV1;
+                _transaction = transactionResult.Transaction;
                 _blockHash = transactionResult.ExecutionInfo.BlockHash;
                 _executionResult = transactionResult.ExecutionInfo.ExecutionResult;
 
@@ -77,7 +78,7 @@ public partial class TransactionDetail
     {
         try
         {
-            var isoDateTime = Casper.Network.SDK.Utils.DateUtils.ToISOString(_transaction.Header.Timestamp);
+            var isoDateTime = Casper.Network.SDK.Utils.DateUtils.ToISOString(_transaction.Timestamp);
             if(DateTime.TryParse(isoDateTime, out var t))
                 return t.ToLocalTime().ToString("", CultureInfo.CurrentCulture);
         }
@@ -85,5 +86,35 @@ public partial class TransactionDetail
         {
         }
         return timestamp.ToString();
+    }
+
+    private string PricingModeType()
+    {
+        switch (_transaction.PricingMode)
+        {
+            case ClassicPricingMode classicPricingMode:
+                return "Classic";
+                break;
+            case FixedPricingMode fixedPricingMode:
+                return "Fixed";
+            case ReservedPricingMode:
+                return "Reserved";
+            default:
+                return "Unknown";
+        }
+    }
+    
+    private string GasPriceTolerance()
+    {
+        switch (_transaction.PricingMode)
+        {
+            case ClassicPricingMode classicPricingMode:
+                return classicPricingMode.GasPriceTolerance.ToString();
+                break;
+            case FixedPricingMode fixedPricingMode:
+                return fixedPricingMode.GasPriceTolerance.ToString();
+            default:
+                return "--";
+        }
     }
 }
