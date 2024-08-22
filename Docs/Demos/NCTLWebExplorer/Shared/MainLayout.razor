@@ -22,7 +22,7 @@
     <RadzenSidebar @bind-Expanded="@sidebarExpanded">
         <RadzenPanelMenu class="mt-4">
             <RadzenPanelMenuItem Text="View Blocks" Icon="label" Path="/blocks"/>
-            <RadzenPanelMenuItem Text="View Steps" Icon="label" Path="/steps"/>
+            @* <RadzenPanelMenuItem Text="View Steps" Icon="label" Path="/steps"/> *@
             <RadzenPanelMenuItem Text="View Transactions" Icon="label" Path="/transactions"/>
             <RadzenPanelMenuItem Text="Get Global State Key" Icon="label" Path="/query-global-state"/>
             <RadzenPanelMenuItem Text="Get Entity" Icon="label" Path="/get-entity"/>
@@ -44,8 +44,8 @@
                 </a>
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.End" Gap="0">
-                <div>Built with Casper .NET SDK v3.0.0-beta1</div>
-                <div>Explorer version: v0.2.2</div>
+                <div>Built with Casper .NET SDK v3.0.0-beta2</div>
+                <div>Explorer version: v0.2.3</div>
             </RadzenStack>
         </RadzenStack>
     </RadzenFooter>

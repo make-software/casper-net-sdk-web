@@ -696,6 +696,51 @@ namespace Casper.Network.SDK.Web
             return await CasperClient.GetValidatorChanges();
         }
         
+        public async Task<RpcResponse<GetRewardResult>> GetValidatorReward(PublicKey validator, string blockHash = null)
+        {
+            _logger.LogInformation($"Call to GetValidatorReward");
+
+            return await CasperClient.GetValidatorReward(validator, blockHash);
+        }
+
+        public async Task<RpcResponse<GetRewardResult>> GetValidatorReward(PublicKey validator, ulong blockHeight)
+        {
+            _logger.LogInformation($"Call to GetValidatorReward");
+
+            return await CasperClient.GetValidatorReward(validator, blockHeight);
+        }
+
+        public async Task<RpcResponse<GetRewardResult>> GetValidatorRewardWithEraId(PublicKey validator, ulong eraId)
+        {
+            _logger.LogInformation($"Call to GetValidatorRewardWithEraId");
+
+            return await CasperClient.GetValidatorRewardWithEraId(validator, eraId);
+        }
+
+        public async Task<RpcResponse<GetRewardResult>> GetDelegatorReward(PublicKey validator, PublicKey delegator,
+            string blockHash = null)
+        {
+            _logger.LogInformation($"Call to GetDelegatorReward");
+
+            return await CasperClient.GetDelegatorReward(validator, delegator, blockHash);
+        }
+
+        public async Task<RpcResponse<GetRewardResult>> GetDelegatorReward(PublicKey validator, PublicKey delegator,
+            ulong blockHeight)
+        {
+            _logger.LogInformation($"Call to GetDelegatorReward");
+
+            return await CasperClient.GetDelegatorReward(validator, delegator, blockHeight);
+        }
+
+        public async Task<RpcResponse<GetRewardResult>> GetDelegatorRewardWithEraId(PublicKey validator, PublicKey delegator,
+            ulong eraId)
+        {
+            _logger.LogInformation($"Call to GetDelegatorRewardWithEraId");
+
+            return await CasperClient.GetDelegatorRewardWithEraId(validator, delegator, eraId);
+        }
+
         /// <summary>
         /// Request the RPC Json schema to the network node.
         /// </summary>

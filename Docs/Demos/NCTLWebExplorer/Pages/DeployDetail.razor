@@ -23,7 +23,7 @@ else
                         <div>Timestamp</div>
                         <b>@TimestampToLocalTime(_deploy.Header.Timestamp)</b>
                         <div class="mt-3">Result</div>
-                        <b>@(_executionResult.ErrorMessage == null ? "Success" : "Failed")</b>
+                        <b>@(_executionResult?.ErrorMessage == null ? "Success" : "Failed")</b>
                     </div>
                     <div class="col-md-4">
                         <div>Initiator</div>

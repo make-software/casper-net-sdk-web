@@ -38,8 +38,8 @@ public partial class TransactionDetail
                 _transactionJson = response.Result.GetRawText();
                 var transactionResult = response.Parse();
                 _transaction = transactionResult.Transaction;
-                _blockHash = transactionResult.ExecutionInfo.BlockHash;
-                _executionResult = transactionResult.ExecutionInfo.ExecutionResult;
+                _blockHash = transactionResult.ExecutionInfo?.BlockHash;
+                _executionResult = transactionResult.ExecutionInfo?.ExecutionResult;
 
                 StateHasChanged();
             }
@@ -88,6 +88,14 @@ public partial class TransactionDetail
         return timestamp.ToString();
     }
 
+    private string GetTransactionResult()
+    {
+        if (_executionResult is null)
+            return "Not executed";
+
+        Console.WriteLine("EXECUTION RESULT: " + _executionResult);
+        return _executionResult.ErrorMessage == null ? "Success" : "Failed";
+    }
     private string PricingModeType()
     {
         switch (_transaction.PricingMode)
