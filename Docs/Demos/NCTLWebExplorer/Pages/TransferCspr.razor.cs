@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Numerics;
 using Casper.Network.SDK;
 using Casper.Network.SDK.JsonRpc;
@@ -80,7 +81,7 @@ public partial class TransferCspr
             if (string.IsNullOrWhiteSpace(_transferAmount))
                 throw new Exception();
 
-            var cspr = float.Parse(_transferAmount);
+            var cspr = ParseFloat(_transferAmount);
             if (cspr < 2.5)
                 throw new Exception();
             var motes = (ulong)(cspr * 1_000_000_000);
@@ -137,5 +138,28 @@ public partial class TransferCspr
 
         _targetPublicKey = null;
         _transferAmount = null;
+    }
+    
+    public static float ParseFloat(string input)
+    {
+        // Create a NumberFormatInfo object to allow both comma and dot as decimal separators
+        NumberFormatInfo format = new NumberFormatInfo();
+        format.NumberDecimalSeparator = ",";
+        
+        // Try to parse with comma as decimal separator
+        if (float.TryParse(input, NumberStyles.Float, format, out float result))
+        {
+            return result;
+        }
+
+        // If that fails, try parsing with dot as decimal separator
+        format.NumberDecimalSeparator = ".";
+        if (float.TryParse(input, NumberStyles.Float, format, out result))
+        {
+            return result;
+        }
+
+        // Handle the case where parsing fails (optional)
+        throw new FormatException($"Unable to parse '{input}' as a float.");
     }
 }
