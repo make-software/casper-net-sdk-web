@@ -5,13 +5,6 @@ const uiContainer = 'csprclick-ui';
 
 const defaultTheme = 'light';
 
-const onThemeChanged =  (theme) => {
-    const page = document.querySelector('body');
-    if (theme === 'dark') page?.classList.add('dark');
-    else page?.classList.remove('dark');
-    console.log('Theme switched to', theme);
-};
-
 const accountMenuItems = [
     'CopyHashMenuItem',
 ];
