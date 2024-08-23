@@ -4,20 +4,23 @@
 
 <RadzenLayout>
     <RadzenHeader>
-        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="0">
+        <RadzenStack Orientation="Orientation.Vertical">
+            <div id="csprclick-ui-wrapper">
+                <div id="csprclick-ui"></div>
+            </div>
             <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="0">
-                <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)"/>
-                <RadzenText TextStyle="TextStyle.H4" Style="margin-bottom: 0">@_PageTitle</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center" Gap="0">
+                    <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)"/>
+                    <RadzenText TextStyle="TextStyle.H4" Style="margin-bottom: 0">@_PageTitle</RadzenText>
+                </RadzenStack>
+
+                @_statusMessage
+                <RadzenButton Click="@(_ => OnConnectToCondor())" Icon="autorenew"
+                              Text="@("Build " + _buildVersion)"
+                              ButtonStyle="ButtonStyle.Light"
+                              Style="margin-right: 16px"/>
             </RadzenStack>
-
-            @_statusMessage
-            <RadzenButton Click="@(_ => OnConnectToCondor())" Icon="autorenew"
-                          Text="@("Build " + _buildVersion)" 
-                          ButtonStyle="ButtonStyle.Light"
-                          Style="margin-right: 16px"/>
         </RadzenStack>
-
-
     </RadzenHeader>
     <RadzenSidebar @bind-Expanded="@sidebarExpanded">
         <RadzenPanelMenu class="mt-4">
@@ -46,7 +49,7 @@
             </RadzenStack>
             <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.End" Gap="0">
                 <div>Built with Casper .NET SDK v3.0.0-beta2</div>
-                <div>Explorer version: v0.2.3</div>
+                <div>Explorer version: v0.2.4</div>
             </RadzenStack>
         </RadzenStack>
     </RadzenFooter>
