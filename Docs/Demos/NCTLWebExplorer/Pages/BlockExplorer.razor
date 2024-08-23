@@ -1,4 +1,5 @@
 ﻿@page "/blocks"
+@using System.Globalization
 @using Casper.Network.SDK.Types
 @using NCTLWebExplorer.Models
 
@@ -19,12 +20,12 @@
             <Columns>
                 <RadzenDataGridColumn TItem="BlockSummary" Property="BlockHeight" Title="Block Height" Type="typeof(int)">
                     <Template>
-                        <a href="/blocks/@context.Hash">@context.Height</a>
+                        <a href="/blocks/@context.Hash">@context.Height.ToString("N0", CultureInfo.InvariantCulture)</a>
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="BlockSummary" Property="Era" Title="Era" Type="typeof(int)">
                     <Template>
-                        @context.EraId
+                        @context.EraId.ToString("N0", CultureInfo.InvariantCulture)
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="BlockSummary" Property="TransactionCount" Title="Transactions" Type="typeof(int)">

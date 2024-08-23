@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Casper.Network.SDK;
 using Casper.Network.SDK.JsonRpc;
 using Casper.Network.SDK.Types;
@@ -11,53 +11,129 @@ public partial class TransferCspr
 {
     private string _originPublicKey;
     private string _targetPublicKey;
-    private string _transferAmount;
+    private string _transferAmount = "2.5";
        
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                await _csprClickInterop.SetDotNetInstance();
+                Console.WriteLine("Getting key");
+                _originPublicKey = await _csprClickInterop.GetActiveKey();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error getting key");
+                Console.WriteLine(e.Message);
+            }
+        
+            _csprClickInterop.OnStateUpdate += (type, key) =>
+            {
+                _originPublicKey = key;
+                StateHasChanged();
+            };
+            StateHasChanged();
+        }
+    }
+
     async Task SendTransferBtnClicked()
     {
         ErrorMessage = null;
         SuccessMessage = null;
         
-        // var state = await SignerInterop.GetState();
-        //
-        // if (state is not {IsUnlocked: true})
-        // {
-        //     NotificationService.Notify(new NotificationMessage
-        //     {
-        //         Severity = NotificationSeverity.Error, Summary = "Unlock Casper Signer to sign the deploy",
-        //         Duration = 4000
-        //     });
-        //     return;
-        // }
-        //
-        // var casperService = CasperRpcService as CasperRPCService;
-        //
-        // var deploy = DeployTemplates.StandardTransfer(PublicKey.FromHexString(state.ActivePK),
-        //     PublicKey.FromHexString(_targetPublicKey),
-        //     BigInteger.Parse(_transferAmount) * 1_000_000_000,
-        //     new BigInteger(100_000_000),
-        //     casperService?.ChainName,
-        //     1);
-        //
-        // deploy = await SignDeployWithSigner(deploy, state.ActivePK, _targetPublicKey);
-        //
-        // try
-        // {
-        //     var rpcResponse = await CasperRpcService?.PutDeploy(deploy)!;
-        //     var result = rpcResponse.Parse();
-        //     Console.WriteLine("RESULT: " + result.DeployHash);
-        //     SuccessMessage = "<b>Deploy hash:&nbsp;</b>" + result.DeployHash;
-        //     
-        //     NotificationService.Notify(new NotificationMessage
-        //         {Severity = NotificationSeverity.Success, Summary = "Transfer successfully sent.", Duration = 4000});
-        // }
-        // catch (RpcClientException e)
-        // {
-        //     this.ErrorMessage = e.Message;
-        //     
-        //     NotificationService.Notify(new NotificationMessage
-        //         {Severity = NotificationSeverity.Error, Summary = "Error sending the transaction.", Duration = 4000});
-        // }
+        if (string.IsNullOrWhiteSpace(_originPublicKey))
+        {
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error, Summary = "Sender account not valid.",
+                Duration = 4000
+            });
+            return;
+        }
+
+        try
+        {
+            if (string.IsNullOrWhiteSpace(_targetPublicKey))
+                throw new Exception();
+
+            if(_originPublicKey == _targetPublicKey)
+                throw new Exception();
+
+            var pk = PublicKey.FromHexString(_targetPublicKey);
+        }
+        catch (Exception e)
+        {
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error, Summary = "Recipient must be a valid public key.",
+                Duration = 4000
+            });
+            return;
+        }
+        
+        BigInteger amount;
+
+        try
+        {
+            if (string.IsNullOrWhiteSpace(_transferAmount))
+                throw new Exception();
+
+            var cspr = float.Parse(_transferAmount);
+            if (cspr < 2.5)
+                throw new Exception();
+            var motes = (ulong)(cspr * 1_000_000_000);
+            amount = new BigInteger(motes);
+        }
+        catch (Exception e)
+        {
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error, Summary = "Amount not valid",
+                Duration = 4000
+            });
+            return;
+        }
+
+        var casperService = CasperRpcService as CasperRPCService;
+
+        var deploy = DeployTemplates.StandardTransfer(
+            PublicKey.FromHexString(_originPublicKey), 
+            PublicKey.FromHexString(_targetPublicKey),
+            amount,
+            new BigInteger(100_000_000),
+            casperService?.ChainName,
+            1);
+
+        deploy = await _csprClickInterop.SignDeploy(deploy, _originPublicKey);
+
+        if (deploy is null)
+        {
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error, Summary = "Error getting the deploy signature.",
+                Duration = 4000
+            });
+            return;
+        }
+        
+        try
+        {
+            var rpcResponse = await CasperRpcService?.PutDeploy(deploy)!;
+            var result = rpcResponse.Parse();
+            SuccessMessage = "<b>Deploy hash:&nbsp;</b>" + result.DeployHash;
+            
+            NotificationService.Notify(new NotificationMessage
+                {Severity = NotificationSeverity.Success, Summary = "Transfer successfully sent.", Duration = 4000});
+        }
+        catch (RpcClientException e)
+        {
+            this.ErrorMessage = e.Message;
+            
+            NotificationService.Notify(new NotificationMessage
+                {Severity = NotificationSeverity.Error, Summary = "Error sending the transaction.", Duration = 4000});
+        }
 
         _targetPublicKey = null;
         _transferAmount = null;

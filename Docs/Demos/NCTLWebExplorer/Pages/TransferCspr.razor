@@ -1,5 +1,6 @@
-﻿@page "/transfer-cspr"
+@page "/transfer-cspr"
 @inherits ExplorerComponent;
+@inject CsprClickInterop _csprClickInterop;
 
 <PageTitle>Transfer $CSPR</PageTitle>
 
@@ -23,9 +24,19 @@
 
         <RadzenCard Class="w-100 mb-4">
             <div class="row mb-4">
-                <PublicKeyTextBox Text="Enter the origin Public Key:"
-                                  LinkedToSigner="true" 
-                                  @bind-Value="@_originPublicKey" Class="w-100"/>
+                <h5>Sender Public Key:</h5>
+                @if (!string.IsNullOrWhiteSpace(_originPublicKey))
+                {
+                    <div>
+                        <RadzenTextBox @bind-Value="_originPublicKey" Disabled="true" Class="w-100"/>
+                    </div>    
+                }
+                else
+                {
+                    <div>
+                        <RadzenTextBox Placeholder="Connect your wallet with CSPR.click" Disabled="true" Class="w-100"/>
+                    </div>
+                }
             </div>
             <div class="row mb-4">
                 <PublicKeyTextBox Text="Enter the recipient Public Key:" 

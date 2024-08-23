@@ -14,22 +14,28 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
     <link rel="icon" type="image/png" sizes="256x256" href="/favicon-256w.png">
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered"/>
+    <script src="./app.js"></script>
+    <script defer="defer" src="https://cdn.cspr.click/ui/v1.5.0/csprclick-client-1.5.0.js"></script>
 </head>
 <body>
-@RenderBody()
+<div id="app">
+    <div id="csprclick-ui-wrapper">
+        <div id="csprclick-ui"></div>
+    </div>
+    @RenderBody()
 
-<div id="blazor-error-ui">
-    <environment include="Staging,Production">
-        An error has occurred. This application may no longer respond until reloaded.
-    </environment>
-    <environment include="Development">
-        An unhandled exception has occurred. See browser dev tools for details.
-    </environment>
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.server.js"></script>
 </div>
-
-<script src="_framework/blazor.server.js"></script>
-
 </body>
 </html>

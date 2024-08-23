@@ -1,6 +1,4 @@
-﻿using Casper.Network.SDK.Web;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components;
 using Radzen;
 
 namespace NCTLWebExplorer.Components;

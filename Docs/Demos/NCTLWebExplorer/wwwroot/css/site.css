@@ -1,4 +1,16 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('https://fonts.cdnfonts.com/css/inter');
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    src: url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2')
+    format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono/web/woff/JetBrainsMono-Regular.woff')
+    format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -73,4 +85,10 @@ h3 span.gskey {
 
 div:has(> json-viewer) {
     overflow: scroll;
+}
+
+div#csprclick-ui-wrapper {
+    background-color: rgb(24, 29, 64);;
+    padding-left: 13px;
+    padding-right: 16px;
 }

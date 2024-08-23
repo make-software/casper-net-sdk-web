@@ -1,5 +1,6 @@
 using NCTLWebExplorer.Services;
 using Casper.Network.SDK.Web;
+using NCTLWebExplorer.Utils;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddCasperRPCService(builder.Configuration);
 builder.Services.AddCasperSSEService(builder.Configuration);
 builder.Services.AddSingleton<EventListener>();
+
+builder.Services.AddScoped<CsprClickInterop>();
 
 var app = builder.Build();
 
