@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
+builder.Services.AddMemoryCache();
+
 // Add Radzen services.
 builder.Services.AddScoped<NotificationService>();
 
