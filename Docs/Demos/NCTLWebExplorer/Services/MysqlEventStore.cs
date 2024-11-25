@@ -1,4 +1,5 @@
 using System.Data;
+using Microsoft.Extensions.Caching.Memory;
 using MySql.Data.MySqlClient;
 using NCTLWebExplorer.Models;
 
@@ -7,13 +8,15 @@ namespace NCTLWebExplorer.Services;
 public class MysqlEventStore : IEventStore, IDisposable
 {
     private readonly ILogger<EventListener> _logger;
-
+    private readonly IMemoryCache _memoryCache;
+    
     private readonly string _connectionString;
 
-    public MysqlEventStore(string connectionString, ILogger<EventListener> logger)
+    public MysqlEventStore(string connectionString, ILogger<EventListener> logger, IMemoryCache memoryCache)
     {
         _connectionString = connectionString;
         _logger = logger;
+        _memoryCache = memoryCache;
     }
 
     public void Dispose()
@@ -170,14 +173,9 @@ public class MysqlEventStore : IEventStore, IDisposable
 
                     paginatedData.Data = data;
 
-                    string countQuery = "SELECT COUNT(*) FROM Steps";
-
-                    using (MySqlCommand countCommand = new MySqlCommand(countQuery, connection))
-                    {
-                        paginatedData.ItemCount = Convert.ToInt32(await countCommand.ExecuteScalarAsync());
-                    }
-
-                    paginatedData.PageCount = (int)Math.Ceiling((decimal)paginatedData.ItemCount / pageSize);
+                    var countItems = await this.GetItemsCount(connection, "Steps");
+                    paginatedData.ItemCount = countItems;
+                    paginatedData.PageCount = (int)Math.Ceiling((decimal)countItems / pageSize);
                 }
             }
 
@@ -239,14 +237,9 @@ public class MysqlEventStore : IEventStore, IDisposable
 
                     paginatedData.Data = data;
 
-                    string countQuery = "SELECT COUNT(*) FROM Blocks";
-
-                    using (MySqlCommand countCommand = new MySqlCommand(countQuery, connection))
-                    {
-                        paginatedData.ItemCount = Convert.ToInt32(await countCommand.ExecuteScalarAsync());
-                    }
-
-                    paginatedData.PageCount = (int)Math.Ceiling((decimal)paginatedData.ItemCount / pageSize);
+                    var countItems = await this.GetItemsCount(connection, "Blocks");
+                    paginatedData.ItemCount = countItems;
+                    paginatedData.PageCount = (int)Math.Ceiling((decimal)countItems / pageSize);
                 }
             }
 
@@ -309,14 +302,9 @@ public class MysqlEventStore : IEventStore, IDisposable
 
                     paginatedData.Data = data;
 
-                    string countQuery = "SELECT COUNT(*) FROM Transactions";
-
-                    using (MySqlCommand countCommand = new MySqlCommand(countQuery, connection))
-                    {
-                        paginatedData.ItemCount = Convert.ToInt32(await countCommand.ExecuteScalarAsync());
-                    }
-
-                    paginatedData.PageCount = (int)Math.Ceiling((decimal)paginatedData.ItemCount / pageSize);
+                    var countItems = await this.GetItemsCount(connection, "Transactions");
+                    paginatedData.ItemCount = countItems;
+                    paginatedData.PageCount = (int)Math.Ceiling((decimal)countItems / pageSize);
                 }
             }
 
@@ -477,5 +465,29 @@ public class MysqlEventStore : IEventStore, IDisposable
         }
 
         return maxId;
+    }
+
+    private async Task<int> GetItemsCount(MySqlConnection connection, string entity)
+    {
+        if (_memoryCache.TryGetValue(entity + "Count", out int count))
+        {
+            _logger.LogDebug("Retrieved cachcd value. {entity} {count}:", entity, count);
+            return count;
+        }
+
+        var countQuery = "SELECT COUNT(*) FROM " + entity;
+
+        await using (MySqlCommand countCommand = new MySqlCommand(countQuery, connection))
+        {
+            var countItems = Convert.ToInt32(await countCommand.ExecuteScalarAsync());
+            
+            var cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
+            };
+            _memoryCache.Set(entity, countItems, cacheEntryOptions);
+
+            return countItems;
+        }
     }
 }
