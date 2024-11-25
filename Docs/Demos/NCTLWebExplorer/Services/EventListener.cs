@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Casper.Network.SDK.SSE;
 using Casper.Network.SDK.Types;
+using Microsoft.Extensions.Caching.Memory;
 using NCTLWebExplorer.Models;
 
 namespace NCTLWebExplorer.Services;
@@ -57,7 +58,7 @@ public class EventListener
         return await _store.GetStepByEraId(eraId);
     }
     
-    public EventListener(ISSEClient sseService, ILogger<EventListener> logger, IConfiguration config)
+    public EventListener(ISSEClient sseService, ILogger<EventListener> logger, IConfiguration config, IMemoryCache memoryCache)
     {
         _sseService = sseService;
         _logger = logger;
@@ -66,7 +67,7 @@ public class EventListener
         ulong startFrom = 0;
         if (!string.IsNullOrWhiteSpace(connectionString))
         {
-            var mysqlStore = new MysqlEventStore(connectionString, _logger);
+            var mysqlStore = new MysqlEventStore(connectionString, _logger, memoryCache);
             startFrom = mysqlStore.GetHighestEventId();
             startFrom = startFrom == 0 ? 0 : startFrom + 1;
             _store = mysqlStore;
