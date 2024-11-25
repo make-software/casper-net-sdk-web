@@ -487,7 +487,7 @@ public class MysqlEventStore : IEventStore, IDisposable
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
             };
-            _memoryCache.Set(entity, countItems, cacheEntryOptions);
+            _memoryCache.Set(entity + "Count", countItems, cacheEntryOptions);
 
             return countItems;
         }
