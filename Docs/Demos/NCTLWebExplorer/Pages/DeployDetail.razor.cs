@@ -29,10 +29,10 @@ public partial class DeployDetail
         {
             try
             {
-                var response = await CasperRpcService.GetDeploy(DeployHash);
+                var response = await CasperRpcService.GetTransaction(new TransactionHash() {Deploy = DeployHash});
                 _deployJson = response.Result.GetRawText();
                 var deployResult = response.Parse();
-                _deploy = deployResult.Deploy;
+                _deploy = (Deploy)deployResult.Transaction;
                 _blockHash = deployResult.ExecutionInfo.BlockHash;
                 _executionResult = deployResult.ExecutionInfo.ExecutionResult;
                 StateHasChanged();

@@ -240,6 +240,30 @@ namespace Casper.Network.SDK.Web
         }
 
         /// <summary>
+        /// Returns a Package from the network
+        /// </summary>
+        /// <param name="entityAddr">The entity address to get information of.</param>
+        /// <param name="blockHash">A block hash for which the information of the entity is queried. Null for most recent information.</param>
+        public async Task<RpcResponse<GetPackageResult>> GetPackage(string packageHash, string blockHash = null)
+        {
+            _logger.LogInformation($"Call to GetPackage");
+
+            return await CasperClient.GetPackage(packageHash, blockHash);
+        }
+        
+        /// <summary>
+        /// Returns a Package from the network
+        /// </summary>
+        /// <param name="entityAddr">The package address or contract package hash to get information of.</param>
+        /// <param name="blockHeight">A block height for which the information of the package is queried.</param>
+        public async Task<RpcResponse<GetPackageResult>> GetPackage(string packageHash, ulong blockHeight)
+        {
+            _logger.LogInformation($"Call to GetPackage");
+
+            return await CasperClient.GetPackage(packageHash, blockHeight);
+        }
+        
+        /// <summary>
         /// Request the stored value in a global state key.
         /// </summary>
         /// <param name="key">The global state key formatted as a string to query the value from the network.</param>

@@ -100,13 +100,13 @@ public partial class TransactionDetail
     {
         switch (_transaction.PricingMode)
         {
-            case ClassicPricingMode classicPricingMode:
-                return "Classic";
+            case PaymentLimitedPricingMode classicPricingMode:
+                return "PaymentLimited";
                 break;
             case FixedPricingMode fixedPricingMode:
                 return "Fixed";
-            case ReservedPricingMode:
-                return "Reserved";
+            case PrepaidPricingMode:
+                return "Prepaid";
             default:
                 return "Unknown";
         }
@@ -116,7 +116,7 @@ public partial class TransactionDetail
     {
         switch (_transaction.PricingMode)
         {
-            case ClassicPricingMode classicPricingMode:
+            case PaymentLimitedPricingMode classicPricingMode:
                 return classicPricingMode.GasPriceTolerance.ToString();
                 break;
             case FixedPricingMode fixedPricingMode:

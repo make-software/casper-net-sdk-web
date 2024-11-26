@@ -475,8 +475,6 @@ public class MysqlEventStore : IEventStore, IDisposable
             return count;
         }
 
-        _logger.LogDebug("{entity} count not found in cache. querying database:", entity);
-
         var countQuery = "SELECT COUNT(*) FROM " + entity;
 
         await using (MySqlCommand countCommand = new MySqlCommand(countQuery, connection))
