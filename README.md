@@ -6,7 +6,6 @@ The main components are:
 
 * `CasperRPCService`: a service class to call RPC endpoints in a Casper node.
 * `CasperSSEService`: a service class to listen for server side events from a Casper node.
-* `CasperSignerInterop`: a service class to communicate with the Casper Signer browser extension.
 * `CasperLedgerInterop`: a service class to communicate with a Ledger device via the browser WebUSB API.
 
 ## Documentation
