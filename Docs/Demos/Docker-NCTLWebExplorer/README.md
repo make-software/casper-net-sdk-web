@@ -25,4 +25,3 @@ $ docker-compose up
 ```
 
 4. In your browser, navigate to `http://localhost:8081/`.
-
