@@ -81,4 +81,3 @@ The directory `Docs/Demos` contains a demo project that shows how to configure t
 Click the button to start coding in Gitpod with an online IDE.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/make-software/casper-net-sdk-web)
-
