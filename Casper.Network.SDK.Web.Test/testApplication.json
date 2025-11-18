@@ -1,6 +1,6 @@
 {
   "Casper.Network.SDK.Web" : {
-    "NodeAddress": "http://52.35.59.254:7777/rpc",
+    "NodeAddress": "https://node.testnet.casper.network/rpc",
     "ClientFactory": "caspernode",
     "ChainName": "casper-test",
     "SSEHost": "127.0.0.1",

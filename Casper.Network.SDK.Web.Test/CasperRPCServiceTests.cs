@@ -113,10 +113,10 @@ public class CasperRPCServiceTests
     [Test]
     public async Task GetAccountTest()
     {
-        var account = PublicKey.FromHexString("01c867ff3cf1d4e4e68fc00922fdcb740304def196e223091dee62012f444b9eba");
+        var account = PublicKey.FromHexString("0184f6d260F4EE6869DDB36affe15456dE6aE045278FA2f467bb677561cE0daD55");
         try
         {
-            var response = await _casperClient.GetAccountInfo(account, 1);
+            var response = await _casperClient.GetAccountInfo(account);
             var accountInfo = response.Parse();
             Assert.That(accountInfo.Account.AccountHash.ToString(), Is.Not.Empty);
 
