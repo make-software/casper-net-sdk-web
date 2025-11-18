@@ -64,9 +64,9 @@ Finally, in your `appsettings.json` you must specify some configuration variable
 {
   ...  
   "Casper.Network.SDK.Web" : {
-    "NodeAddress": "http://testnet-node.make.services:7777/rpc",
+    "NodeAddress": "https://node.testnet.casper.network/rpc",
     "ClientFactory": "caspernode",
-    "ChainName": "casper-net-1"
+    "ChainName": "casper-test",
   },
   ...
 }
